@@ -23,7 +23,7 @@ onMounted(async () => {
 
 <style>
 body {
-  background-color: black;
+  background-color: #18191a;
   color: white;
 }
 </style>

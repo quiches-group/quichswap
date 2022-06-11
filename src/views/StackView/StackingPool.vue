@@ -1,27 +1,35 @@
 <template>
-  <q-expansion-panel show-separator>
+  <q-expansion-panel show-separator class="text-white" :style="{ backgroundColor: '#242526' }" header-background-color="#2b2d2e" content-background-color="#242526" accent-color="white">
     <template #header>
       <div class="flex gap-5">
-        <p class="w-40">Stack {{ poolConfiguration.name }}</p>
-        <q-format-number :value="state.totalStackedTokens" :max-fraction-digits="3" :min-fraction-digits="3" locale="fr-FR" />
-        <q-format-number :value="138000000" :max-fraction-digits="3" :min-fraction-digits="3" locale="fr-FR" />
+        <p class="w-40 font-bold">Stack {{ poolConfiguration.name }}</p>
+
+        <div>
+          <p class="text-gray-500">Total Stacked Tokens</p>
+          <q-format-number :value="state.totalStackedTokens" :max-fraction-digits="3" :min-fraction-digits="3" locale="en-US" />
+          <q-format-number class="text-gray-500" :value="138000000" :max-fraction-digits="3" :min-fraction-digits="3" locale="en-US" />
+        </div>
       </div>
     </template>
 
     <template #content>
-      <div class="flex gap-5 text-black">
-        <div class="w-40">
-          <p>My Stacked Tokens</p>
-          <q-format-number :value="state.walletStackedTokens" :max-fraction-digits="3" :min-fraction-digits="3" locale="fr-FR" />
+      <div class="flex gap-5 items-center justify-start">
+        <div v-if="state.walletStackedTokens != 0" class="w-40">
+          <p class="text-gray-500">My Stacked Tokens</p>
+          <q-format-number :value="state.walletStackedTokens" :max-fraction-digits="3" :min-fraction-digits="3" locale="en-US" />
+          <p class="text-gray-500">≃ 12000$</p>
         </div>
 
-        <div class="mr-auto">
-          <p>My Earned QCH</p>
-          <q-format-number :value="state.walletRewardAmount" :max-fraction-digits="3" :min-fraction-digits="3" locale="fr-FR" />
+        <div v-if="state.walletStackedTokens != 0" class="mr-auto">
+          <p class="text-gray-500">My Earned QCH</p>
+          <q-format-number :value="state.walletRewardAmount" :max-fraction-digits="3" :min-fraction-digits="3" locale="en-US" />
+          <p class="text-gray-500">≃ 12000$</p>
         </div>
 
-        <connect-button>
-          <button @click="handleStackTokens">Stack tokens</button>
+        <p v-if="state.walletStackedTokens == 0" class="flex-1 text-center text-gray-500">Stake now to earn QCH.</p>
+
+        <connect-button class="justify-self-end">
+          <q-button @click="handleStackTokens">Stack tokens</q-button>
         </connect-button>
       </div>
     </template>
@@ -29,7 +37,7 @@
 </template>
 
 <script setup>
-import { defineEmits, reactive, onMounted, computed, watch } from 'vue';
+import { reactive, onMounted, computed, watch } from 'vue';
 import { storeToRefs } from 'pinia';
 import ConnectButton from '../../components/ConnectButton.vue';
 import { fromWei, toWei } from '../../utils/ethers';

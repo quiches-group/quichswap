@@ -28,9 +28,14 @@
 import { reactive } from 'vue';
 import ConnectButton from '../../components/ConnectButton.vue';
 import StackingPool from './StackingPool.vue';
-import { SampleTokenContract, ST_StackingContract, STQCH_LPTokenContract, STQCHLP_StackingContract } from '../../utils/contracts';
+import { SampleTokenContract, ST_StackingContract, STQCH_LPTokenContract, STQCHLP_StackingContract, QCHTokenContract, QCH_StackingContract } from '../../utils/contracts';
 
 const stackingPools = [
+  {
+    name: 'QCH',
+    stackingContract: QCH_StackingContract,
+    stackedTokenContract: QCHTokenContract,
+  },
   {
     name: 'ST',
     stackingContract: ST_StackingContract,
