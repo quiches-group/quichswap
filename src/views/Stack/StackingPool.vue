@@ -1,7 +1,7 @@
 <template>
   <q-expansion-panel show-separator class="text-white" :style="{ backgroundColor: '#242526' }" header-background-color="#2b2d2e" content-background-color="#242526" accent-color="white">
     <template #header>
-      <div class="flex gap-5">
+      <div class="flex items-start gap-5 p-3">
         <p class="w-40 font-bold">Stack {{ poolConfiguration.name }}</p>
 
         <div>
@@ -9,11 +9,15 @@
           <q-format-number :value="state.totalStackedTokens" :max-fraction-digits="3" :min-fraction-digits="3" locale="en-US" />
           <q-format-number class="text-gray-500" :value="138000000" :max-fraction-digits="3" :min-fraction-digits="3" locale="en-US" />
         </div>
+
+        <connect-button class="justify-self-end">
+          <q-button :loading="state.stackIsLoading" class="ml-auto" @click="handleStackTokens">Stack tokens</q-button>
+        </connect-button>
       </div>
     </template>
 
     <template #content>
-      <div class="flex gap-5 items-center justify-start">
+      <div class="flex gap-5 items-center justify-start p-3">
         <div v-if="state.walletStackedTokens != 0" class="w-40">
           <p class="text-gray-500">My Stacked Tokens</p>
           <q-format-number :value="state.walletStackedTokens" :max-fraction-digits="3" :min-fraction-digits="3" locale="en-US" />
@@ -28,9 +32,7 @@
 
         <p v-if="state.walletStackedTokens == 0" class="flex-1 text-center text-gray-500">Stake now to earn QCH.</p>
 
-        <connect-button class="justify-self-end">
-          <q-button @click="handleStackTokens">Stack tokens</q-button>
-        </connect-button>
+        <q-button :loading="state.claimIsLoading" @click="handleClaimRewards">Claim</q-button>
       </div>
     </template>
   </q-expansion-panel>
@@ -49,6 +51,8 @@ const state = reactive({
   totalStackedTokens: 0,
   walletStackedTokens: 0,
   walletRewardAmount: 0,
+  claimIsLoading: false,
+  stackIsLoading: false,
 });
 
 const props = defineProps({
@@ -78,12 +82,26 @@ const fetchData = async () => {
 };
 
 const handleStackTokens = async () => {
+  state.stackIsLoading = true;
   emit('stackTokens', 'props.name');
 
-  await stackedTokenContract.value.increaseAllowance(stackingContract.value.address, toWei('70'));
-  await stackingContract.value.stack(toWei('70'));
+  let tx = await stackedTokenContract.value.approve(stackingContract.value.address, toWei('70'));
+  await tx.wait();
+
+  tx = await stackingContract.value.stack(toWei('70'));
+  await tx.wait();
 
   await fetchData();
+  state.stackIsLoading = false;
+};
+
+const handleClaimRewards = async () => {
+  state.claimIsLoading = true;
+  const tx = await stackingContract.value.claim();
+  await tx.wait();
+
+  await fetchData();
+  state.claimIsLoading = false;
 };
 
 onMounted(() => {

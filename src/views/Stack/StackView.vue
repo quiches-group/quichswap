@@ -18,15 +18,12 @@
     <div class="stacking-polls flex flex-col p-5 items-center">
       <stacking-pool v-for="pool in stackingPools" :key="pool.name" class="max-w-screen-md w-full" :pool-configuration="pool" />
     </div>
-
-    <connect-button />
   </div>
 </template>
 
 <script setup>
 /* eslint-disable camelcase */
 import { reactive } from 'vue';
-import ConnectButton from '../../components/ConnectButton.vue';
 import StackingPool from './StackingPool.vue';
 import { SampleTokenContract, ST_StackingContract, STQCH_LPTokenContract, STQCHLP_StackingContract, QCHTokenContract, QCH_StackingContract } from '../../utils/contracts';
 
