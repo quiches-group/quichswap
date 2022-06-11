@@ -8,6 +8,8 @@
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore"
   },
   "dependencies": {
+    "@metamask/detect-provider": "^1.2.0",
+    "ethers": "^5.6.8",
     "pinia": "^2.0.14",
     "quichtify": "^1.12.1",
     "vue": "^3.2.36",
