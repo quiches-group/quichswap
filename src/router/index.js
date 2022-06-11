@@ -15,7 +15,15 @@ const router = createRouter({
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
-      component: () => import('../views/StackView/StackView.vue'),
+      component: () => import('../views/Stack/StackView.vue'),
+    },
+    {
+      path: '/mint',
+      name: 'Mint',
+      // route level code-splitting
+      // this generates a separate chunk (About.[hash].js) for this route
+      // which is lazy-loaded when the route is visited.
+      component: () => import('../views/Mint/MintView.vue'),
     },
   ],
 });
