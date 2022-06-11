@@ -14,4 +14,7 @@ export default defineConfig({
       '@components': fileURLToPath(new URL('./components', import.meta.url)),
     },
   },
+  build: {
+    target: 'esnext'
+  }
 });
