@@ -1,0 +1,26 @@
+version: '3.1'
+
+services:
+  vue:
+    container_name: QuichSwap-App
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    restart: always
+    networks:
+      - reverse-proxy
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.QUICHSWAP_APP.rule=Host(`swap.quiches.ovh`)
+      - traefik.http.routers.QUICHSWAP_APP.entrypoints=http
+      - traefik.http.routers.QUICHSWAP_APP.middlewares=https-redirect@file
+      - traefik.http.routers.QUICHSWAP_APP-Https.rule=Host(`swap.quiches.ovh`)
+      - traefik.http.routers.QUICHSWAP_APP-Https.entrypoints=https
+      - traefik.http.routers.QUICHSWAP_APP-Https.middlewares=security@file, compression@file
+      - traefik.http.routers.QUICHSWAP_APP-Https.tls=true
+      - traefik.http.routers.QUICHSWAP_APP-Https.tls.certresolver=letsencrypt
+
+
+networks:
+  reverse-proxy:
+    external: true
