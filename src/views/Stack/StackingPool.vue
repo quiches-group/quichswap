@@ -58,7 +58,7 @@ import ConnectButton from '../../components/ConnectButton.vue';
 import { fromWei, toWei } from '../../utils/ethers';
 import { useWalletStore } from '../../stores/wallet.store';
 
-const { wallet, walletIsConnected, provider } = storeToRefs(useWalletStore());
+const { wallet, walletIsConnected, provider, isWrongNetwork } = storeToRefs(useWalletStore());
 
 const emit = defineEmits(['setupModal']);
 
@@ -90,6 +90,15 @@ const stackingContract = computed(() => props.poolConfiguration.stackingContract
 const stackedTokenContract = computed(() => props.poolConfiguration.stackedTokenContract(provider.value));
 
 const fetchData = async () => {
+  if (isWrongNetwork.value) {
+    state.totalStackedTokens = 0;
+    state.walletStackedTokens = 0;
+    state.walletRewardAmount = 0;
+    state.walletBalance = 0;
+
+    return;
+  }
+
   state.totalStackedTokens = await stackedTokenContract.value.balanceOf(stackingContract.value.address);
 
   if (!walletIsConnected.value) {
@@ -166,7 +175,7 @@ onMounted(() => {
   fetchData();
 });
 
-watch(provider, () => {
+watch([provider, isWrongNetwork], () => {
   fetchData();
 });
 </script>
