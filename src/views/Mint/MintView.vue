@@ -33,7 +33,7 @@ const state = reactive({
 });
 
 const walletBalance = computed(() => Number(fromWei(state.walletBalance)));
-const mintContract = computed(() => mintingContract.value.mintContract(provider.value));
+const tokenContract = computed(() => mintingContract.value.tokenContract(provider.value));
 
 const fetchData = async () => {
   if (!walletIsConnected.value) {
@@ -41,7 +41,7 @@ const fetchData = async () => {
 
     return;
   }
-  state.walletBalance = await mintContract.value.balanceOf(wallet.value);
+  state.walletBalance = await tokenContract.value.balanceOf(wallet.value);
 };
 
 const mint = async () => {
