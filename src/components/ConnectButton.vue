@@ -12,7 +12,9 @@ import { ethereum, isEthereumInjected } from '../utils/ethereum';
 const { walletIsConnected } = storeToRefs(useWalletStore());
 const { setWallet } = useWalletStore();
 
-const connectMetamask = async () => {
+const connectMetamask = async (e) => {
+  e.stopPropagation();
+
   if (!isEthereumInjected) return;
   if (walletIsConnected.value) return;
 

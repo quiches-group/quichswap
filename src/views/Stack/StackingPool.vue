@@ -1,44 +1,57 @@
 <template>
-  <q-expansion-panel show-separator class="text-white" :style="{ backgroundColor: '#242526' }" header-background-color="#2b2d2e" content-background-color="#242526" accent-color="white">
+  <q-expansion-panel class="stacking-pools__item" show-separator header-background-color="#2b2d2e" content-background-color="#242526" accent-color="white">
     <template #header>
-      <div class="flex items-start gap-5 p-3">
-        <p class="w-40 font-bold">Stack {{ poolConfiguration.name }}</p>
+      <div class="flex items-start gap-5 p-3 items-center">
+        <p class="w-40 font-bold self-start">Stack {{ poolConfiguration.name }}</p>
 
-        <div>
+        <div class="flex-1">
           <p class="text-gray-500">Total Stacked Tokens</p>
-          <q-format-number :value="state.totalStackedTokens" :max-fraction-digits="3" :min-fraction-digits="3" locale="en-US" />
+          <div>
+            <q-format-number class="inline-block" :value="totalStackedTokens" :max-fraction-digits="3" :min-fraction-digits="3" locale="en-US" />
+            <span class="text-white" v-text="` ${poolConfiguration.name}`" />
+          </div>
           <q-format-number class="text-gray-500" :value="138000000" :max-fraction-digits="3" :min-fraction-digits="3" locale="en-US" />
         </div>
 
-        <connect-button class="justify-self-end">
-          <q-button :loading="state.stackIsLoading" class="ml-auto" @click="handleStackTokens">Stack tokens</q-button>
+        <connect-button>
+          <q-button :loading="state.stackIsLoading" @click="handleOpenStackTokens">Stack tokens</q-button>
         </connect-button>
       </div>
     </template>
 
     <template #content>
-      <div class="flex gap-5 items-center justify-start p-3">
-        <div v-if="state.walletStackedTokens != 0" class="w-40">
+      <div v-if="state.walletStackedTokens != 0" class="flex gap-5 items-center justify-start p-3">
+        <div class="w-40">
           <p class="text-gray-500">My Stacked Tokens</p>
-          <q-format-number :value="state.walletStackedTokens" :max-fraction-digits="3" :min-fraction-digits="3" locale="en-US" />
+          <div>
+            <q-format-number class="inline-block" :value="walletStackedTokens" :max-fraction-digits="3" :min-fraction-digits="3" locale="en-US" />
+            <span class="text-white" v-text="` ${poolConfiguration.name}`" />
+          </div>
           <p class="text-gray-500">≃ 12000$</p>
         </div>
 
-        <div v-if="state.walletStackedTokens != 0" class="mr-auto">
-          <p class="text-gray-500">My Earned QCH</p>
-          <q-format-number :value="state.walletRewardAmount" :max-fraction-digits="3" :min-fraction-digits="3" locale="en-US" />
+        <div class="mr-auto">
+          <p class="text-gray-500">My Earned</p>
+          <div>
+            <q-format-number class="inline-block" :value="walletRewardAmount" :max-fraction-digits="3" :min-fraction-digits="3" locale="en-US" />
+            <span class="text-white" v-text="` QCH`" />
+          </div>
           <p class="text-gray-500">≃ 12000$</p>
         </div>
 
-        <p v-if="state.walletStackedTokens == 0" class="flex-1 text-center text-gray-500">Stake now to earn QCH.</p>
+        <q-button :loading="state.claimIsLoading" @click="claimRewards">Claim</q-button>
+        <q-button :loading="state.withdrawIsLoading" @click="handleOpenWithdrawTokens">Withdraw</q-button>
+      </div>
 
-        <q-button :loading="state.claimIsLoading" @click="handleClaimRewards">Claim</q-button>
+      <div v-else class="flex gap-5 items-center justify-start p-3">
+        <p class="flex-1 text-center text-gray-500">Stake now to earn QCH.</p>
       </div>
     </template>
   </q-expansion-panel>
 </template>
 
 <script setup>
+/* eslint-disable no-unused-vars */
 import { reactive, onMounted, computed, watch } from 'vue';
 import { storeToRefs } from 'pinia';
 import ConnectButton from '../../components/ConnectButton.vue';
@@ -47,13 +60,24 @@ import { useWalletStore } from '../../stores/wallet.store';
 
 const { wallet, walletIsConnected, provider } = storeToRefs(useWalletStore());
 
+const emit = defineEmits(['setupModal']);
+
 const state = reactive({
   totalStackedTokens: 0,
   walletStackedTokens: 0,
   walletRewardAmount: 0,
+  walletBalance: 0,
   claimIsLoading: false,
   stackIsLoading: false,
+  withdrawIsLoading: false,
+  modalIsOpen: false,
+  modalType: null,
 });
+
+const totalStackedTokens = computed(() => Number(fromWei(state.totalStackedTokens)));
+const walletStackedTokens = computed(() => Number(fromWei(state.walletStackedTokens)));
+const walletRewardAmount = computed(() => Number(fromWei(state.walletRewardAmount)));
+const walletBalance = computed(() => Number(fromWei(state.walletBalance)));
 
 const props = defineProps({
   poolConfiguration: {
@@ -65,43 +89,77 @@ const props = defineProps({
 const stackingContract = computed(() => props.poolConfiguration.stackingContract(provider.value));
 const stackedTokenContract = computed(() => props.poolConfiguration.stackedTokenContract(provider.value));
 
-const emit = defineEmits(['stackTokens']);
-
 const fetchData = async () => {
-  state.totalStackedTokens = Number(fromWei(await stackedTokenContract.value.balanceOf(stackingContract.value.address)));
+  state.totalStackedTokens = await stackedTokenContract.value.balanceOf(stackingContract.value.address);
 
   if (!walletIsConnected.value) {
     state.walletStackedTokens = 0;
     state.walletRewardAmount = 0;
+    state.walletBalance = 0;
 
     return;
   }
 
-  state.walletStackedTokens = Number(fromWei(await stackingContract.value.getTotalStackedByOwner(wallet.value)));
-  state.walletRewardAmount = Number(fromWei(await stackingContract.value.getTotalRewardAmount(wallet.value)));
+  state.walletStackedTokens = await stackingContract.value.getTotalStackedByOwner(wallet.value);
+  state.walletRewardAmount = await stackingContract.value.getTotalRewardAmount(wallet.value);
+  state.walletBalance = await stackedTokenContract.value.balanceOf(wallet.value);
 };
 
-const handleStackTokens = async () => {
+const stackTokens = async (amount) => {
   state.stackIsLoading = true;
-  emit('stackTokens', 'props.name');
 
-  let tx = await stackedTokenContract.value.approve(stackingContract.value.address, toWei('70'));
+  let tx = await stackedTokenContract.value.approve(stackingContract.value.address, toWei(amount));
   await tx.wait();
 
-  tx = await stackingContract.value.stack(toWei('70'));
+  tx = await stackingContract.value.stack(toWei(amount));
   await tx.wait();
 
   await fetchData();
   state.stackIsLoading = false;
 };
 
-const handleClaimRewards = async () => {
+const withdrawAction = async (amount) => {
+  state.withdrawIsLoading = true;
+  const tx = await stackingContract.value.unstack(toWei(amount));
+  await tx.wait();
+
+  await fetchData();
+  state.withdrawIsLoading = false;
+};
+
+const claimRewards = async () => {
   state.claimIsLoading = true;
   const tx = await stackingContract.value.claim();
   await tx.wait();
 
   await fetchData();
   state.claimIsLoading = false;
+};
+
+const handleOpenStackTokens = (e) => {
+  e.stopPropagation();
+
+  const modalConfiguration = {
+    tokenName: props.poolConfiguration.name,
+    actionName: 'Stack',
+    buttonAction: stackTokens,
+    balance: state.walletBalance,
+    balanceLabel: 'Balance',
+  };
+
+  emit('setupModal', modalConfiguration);
+};
+
+const handleOpenWithdrawTokens = () => {
+  const modalConfiguration = {
+    tokenName: props.poolConfiguration.name,
+    actionName: 'Withdraw',
+    buttonAction: withdrawAction,
+    balance: state.walletStackedTokens,
+    balanceLabel: 'Total stacked',
+  };
+
+  emit('setupModal', modalConfiguration);
 };
 
 onMounted(() => {
