@@ -3,7 +3,7 @@
     <h1 class="mt-10 text-4xl font-medium text-center">Liquidity Providing</h1>
     <p class="text-lg font-light text-center">Add liquidity to receive LP tokens</p>
     <div class="flex flex-col items-center py-5 px-4 mt-5 mx-auto max-w-xs rounded-lg bg-tertiary">
-      <q-input v-model="stTokens" class="w-full" background-color="#242526" placeholder="O ST" :outline="true" />
+      <q-input v-model="state.stTokens" class="w-full" background-color="#242526" placeholder="O ST" :outline="true" />
       <p class="mt-2 ml-auto">
         <span class="text-gray-500">Balance: </span>
         <q-format-number class="inline-block text-white" :value="formattedStWalletBalance" :max-fraction-digits="3" :min-fraction-digits="3" locale="en-US" />
@@ -11,7 +11,7 @@
       </p>
 
       <span class="flex items-center justify-center h-10 w-10 p-2 pb-3 my-5 leading-none text-3xl font-bold bg-secondary rounded-full mx-auto">+</span>
-      <q-input v-model="qchTokens" class="w-full" background-color="#242526" placeholder="O QCH" :outline="true" />
+      <q-input v-model="state.qchTokens" class="w-full" background-color="#242526" placeholder="O QCH" :outline="true" />
       <p class="mt-2 ml-auto">
         <span class="text-gray-500">Balance: </span>
         <q-format-number class="inline-block text-white" :value="formattedQchWalletBalance" :max-fraction-digits="3" :min-fraction-digits="3" locale="en-US" />
