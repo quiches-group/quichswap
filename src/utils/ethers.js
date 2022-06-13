@@ -1,4 +1,3 @@
 import { ethers } from 'ethers';
 
-export const fromWei = ethers.utils.formatEther;
-export const toWei = ethers.utils.parseEther;
+export const { parseEther: toWei, formatEther: fromWei } = ethers.utils;
