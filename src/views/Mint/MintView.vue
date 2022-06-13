@@ -21,11 +21,11 @@ import { computed, reactive, onMounted, watch } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useWalletStore } from '../../stores/wallet.store';
 import ConnectButton from '../../components/ConnectButton.vue';
-import { QCHTokenContract } from '../../utils/contracts';
+import { SampleTokenContract } from '../../utils/contracts';
 import { fromWei, toWei } from '../../utils/ethers';
 
 const { wallet, walletIsConnected, provider } = storeToRefs(useWalletStore());
-const mintingContract = computed(() => QCHTokenContract(provider.value));
+const mintingContract = computed(() => SampleTokenContract(provider.value));
 
 const state = reactive({
   walletBalance: 0,
@@ -45,7 +45,8 @@ const fetchData = async () => {
 };
 
 const mint = async () => {
-  await mintingContract.value.mint(wallet.value, toWei(state.amountInput.toString()));
+  const tx = await mintingContract.value.mint(wallet.value, toWei(state.amountInput.toString()));
+  await tx.wait();
   await fetchData();
 };
 
