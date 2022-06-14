@@ -2,8 +2,9 @@
   <q-navbar :is-open="state.navbarIsOpen">
     <q-navbar-content class="flex items-start">
       <q-menu class="p-4 flex-1">
+        <q-menu-item><router-link :to="'/mint'">Mint</router-link></q-menu-item>
         <q-menu-item>Swap</q-menu-item>
-        <q-menu-item>Farm</q-menu-item>
+        <q-menu-item><router-link :to="'/stack'">Stacking</router-link></q-menu-item>
         <q-menu-item>Airdrop</q-menu-item>
       </q-menu>
 

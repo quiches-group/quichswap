@@ -1,6 +1,6 @@
 <template>
   <app-menu @open-wallet-details-modal="state.walletDetailModalIsOpen = true" />
-  <wallet-details-modal :is-open="state.walletDetailModalIsOpen" />
+  <wallet-details-modal :is-open="state.walletDetailModalIsOpen" @modal-state-change="state.walletDetailModalIsOpen = $event" />
   <router-view />
 
   <q-snackbar :is-open="isWrongNetwork" size="medium" position="bottom" color="rgb(220 38 38)" class="border-2 border-red-900 flex flex-row">

@@ -1,9 +1,9 @@
 <template>
-  <q-modal :is-open="isOpen" modal-title="My Wallet" background-color="#2b2d2e" class="z-50" @modal-state-change="emit('closeModal')">
+  <q-modal :is-open="isOpen" modal-title="My Wallet" background-color="#2b2d2e" class="z-50" @modal-state-change="emit('modalStateChange', $event)">
     <q-modal-content class="flex flex-col gap-5" :style="{ width: '600px', maxWidth: '90vw' }">
       <div class="gap-2 flex flex-col">
         <p class="text-gray-500">Your public key</p>
-        <q-input v-model="wallet" background-color="#242526" disabled />
+        <q-input v-model="wallet" background-color="#242526" disabled placeholder="" />
       </div>
 
       <q-separator />
@@ -36,7 +36,7 @@ import { useWalletStore } from '../stores/wallet.store';
 import { fromWei } from '../utils/ethers';
 
 const { wallet, qchBalance, stBalance, stqchlpBalance } = storeToRefs(useWalletStore());
-const emit = defineEmits(['closeModal']);
+const emit = defineEmits(['modalStateChange']);
 
 const tokens = computed(() => [
   {
