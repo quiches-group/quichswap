@@ -51,7 +51,6 @@
 </template>
 
 <script setup>
-/* eslint-disable no-unused-vars */
 import { reactive, onMounted, computed, watch } from 'vue';
 import { storeToRefs } from 'pinia';
 import ConnectButton from '../../components/ConnectButton.vue';
@@ -78,7 +77,6 @@ const state = reactive({
 const totalStackedTokens = computed(() => Number(fromWei(state.totalStackedTokens)));
 const walletStackedTokens = computed(() => Number(fromWei(state.walletStackedTokens)));
 const walletRewardAmount = computed(() => Number(fromWei(state.walletRewardAmount)));
-const walletBalance = computed(() => Number(fromWei(state.walletBalance)));
 
 const props = defineProps({
   poolConfiguration: {
@@ -86,9 +84,6 @@ const props = defineProps({
     required: true,
   },
 });
-
-const stackingContract = computed(() => props.poolConfiguration.stackingContract(provider.value));
-const stackedTokenContract = computed(() => props.poolConfiguration.stackedTokenContract(provider.value));
 
 const fetchData = async () => {
   if (!networkId.value || isWrongNetwork.value) {
@@ -100,7 +95,7 @@ const fetchData = async () => {
     return;
   }
 
-  state.totalStackedTokens = await stackedTokenContract.value.balanceOf(stackingContract.value.address);
+  state.totalStackedTokens = await props.poolConfiguration.stackedTokenContract.balanceOf(props.poolConfiguration.stackingContract.address);
 
   if (!walletIsConnected.value) {
     state.walletStackedTokens = 0;
@@ -110,9 +105,9 @@ const fetchData = async () => {
     return;
   }
 
-  state.walletStackedTokens = await stackingContract.value.getTotalStackedByOwner(wallet.value);
-  state.walletRewardAmount = await stackingContract.value.getTotalRewardAmount(wallet.value);
-  state.walletBalance = await stackedTokenContract.value.balanceOf(wallet.value);
+  state.walletStackedTokens = await props.poolConfiguration.stackingContract.getTotalStackedByOwner(wallet.value);
+  state.walletRewardAmount = await props.poolConfiguration.stackingContract.getTotalRewardAmount(wallet.value);
+  state.walletBalance = await props.poolConfiguration.stackedTokenContract.balanceOf(wallet.value);
 
   await fetchBalance();
 };
@@ -120,10 +115,10 @@ const fetchData = async () => {
 const stackTokens = async (amount) => {
   state.stackIsLoading = true;
 
-  let tx = await stackedTokenContract.value.approve(stackingContract.value.address, toWei(amount));
+  let tx = await props.poolConfiguration.stackedTokenContract.approve(props.poolConfiguration.stackingContract.address, toWei(amount));
   await tx.wait();
 
-  tx = await stackingContract.value.stack(toWei(amount));
+  tx = await props.poolConfiguration.stackingContract.stack(toWei(amount));
   await tx.wait();
 
   await fetchData();
@@ -132,7 +127,7 @@ const stackTokens = async (amount) => {
 
 const withdrawAction = async (amount) => {
   state.withdrawIsLoading = true;
-  const tx = await stackingContract.value.unstack(toWei(amount));
+  const tx = await props.poolConfiguration.stackingContract.unstack(toWei(amount));
   await tx.wait();
 
   await fetchData();
@@ -141,7 +136,7 @@ const withdrawAction = async (amount) => {
 
 const claimRewards = async () => {
   state.claimIsLoading = true;
-  const tx = await stackingContract.value.claim();
+  const tx = await props.poolConfiguration.stackingContract.claim();
   await tx.wait();
 
   await fetchData();

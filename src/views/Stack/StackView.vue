@@ -38,28 +38,31 @@
 
 <script setup>
 /* eslint-disable camelcase */
-import { reactive, watch } from 'vue';
+import { reactive, watch, computed } from 'vue';
+import { storeToRefs } from 'pinia';
 import StackingPool from './StackingPool.vue';
-import { SampleTokenContract, ST_StackingContract, STQCH_LPTokenContract, STQCHLP_StackingContract, QCHTokenContract, QCH_StackingContract } from '../../utils/contracts';
 import { fromWei } from '../../utils/ethers';
+import { useWalletStore } from '../../stores/wallet.store';
 
-const stackingPools = [
+const { QCH_StackingContract, QCHTokenContract, ST_StackingContract, SampleTokenContract, STQCHLP_StackingContract, STQCH_LPTokenContract } = storeToRefs(useWalletStore());
+
+const stackingPools = computed(() => [
   {
     name: 'QCH',
-    stackingContract: QCH_StackingContract,
-    stackedTokenContract: QCHTokenContract,
+    stackingContract: QCH_StackingContract.value,
+    stackedTokenContract: QCHTokenContract.value,
   },
   {
     name: 'ST',
-    stackingContract: ST_StackingContract,
-    stackedTokenContract: SampleTokenContract,
+    stackingContract: ST_StackingContract.value,
+    stackedTokenContract: SampleTokenContract.value,
   },
   {
     name: 'STQCH-LP',
-    stackingContract: STQCHLP_StackingContract,
-    stackedTokenContract: STQCH_LPTokenContract,
+    stackingContract: STQCHLP_StackingContract.value,
+    stackedTokenContract: STQCH_LPTokenContract.value,
   },
-];
+]);
 
 const state = reactive({
   showModal: false,
