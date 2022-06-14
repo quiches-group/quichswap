@@ -29,7 +29,6 @@
 </template>
 
 <script setup>
-/* eslint-disable no-unused-vars */
 import { storeToRefs } from 'pinia';
 import { computed } from 'vue';
 import { useWalletStore } from '../stores/wallet.store';

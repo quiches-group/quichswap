@@ -43,7 +43,7 @@ onMounted(async () => {
 
 ethereum.on('chainChanged', setNetworkId);
 
-watch([provider, wallet], () => {
+watch([provider, wallet, isWrongNetwork], () => {
   fetchBalance();
 });
 </script>
