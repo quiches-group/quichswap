@@ -1,6 +1,6 @@
 <template>
   <q-modal
-    class="text-black z-50 text-white"
+    class="z-50 text-white"
     :is-open="state.showModal"
     :modal-title="`${state.modalConfigurator.actionName} ${state.modalConfigurator.tokenName}`"
     background-color="#2b2d2e"
