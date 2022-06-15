@@ -25,6 +25,11 @@ const router = createRouter({
       // which is lazy-loaded when the route is visited.
       component: () => import('../views/Mint/MintView.vue'),
     },
+    {
+      path: '/analytics',
+      name: 'Analytics',
+      component: () => import('../views/Analytics/AnalyticsView.vue'),
+    },
   ],
 });
 

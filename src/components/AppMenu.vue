@@ -6,6 +6,7 @@
         <q-menu-item>Swap</q-menu-item>
         <q-menu-item><router-link :to="'/stack'">Stacking</router-link></q-menu-item>
         <q-menu-item>Airdrop</q-menu-item>
+        <q-menu-item><router-link :to="'/analytics'">Analytics</router-link></q-menu-item>
       </q-menu>
 
       <connect-button>
