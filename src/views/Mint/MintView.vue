@@ -1,19 +1,25 @@
 <template>
   <div class="p-5 flex flex-col items-center">
-    <q-card class="p-10 bg-[#2b2d2e] outline-1">
+    <q-card class="flex flex-col gap-5 p-10 bg-[#2b2d2e] outline-1">
       <div class="flex flex-row">
         <div class="flex-none">Your balance:</div>
         <span class="flex-1" />
-        <div class="flex-none">{{ walletBalance }} QCH</div>
+        <div class="flex-none">
+          <q-format-number class="inline-block" :value="walletBalance" :max-fraction-digits="1" :min-fraction-digits="1" locale="en-US" />
+          <span class="text-white" v-text="' ST'" />
+        </div>
       </div>
-      <div class="mt-5 flex flex-row">
-        <q-input v-model="state.amountInput" background-color="white" placeholder="Your amount" class="text-black w-full"></q-input>
+      <div class="flex flex-row">
+        <q-input v-model="state.amountInput" background-color="#242526" placeholder="Your amount" class="w-full"></q-input>
       </div>
-      <connect-button class="mt-5">
-        <q-button class="mt-5" @click="mint">Mint</q-button>
+      <connect-button>
+        <q-button :loading="state.mintIsLoading" @click="mint">Mint</q-button>
       </connect-button>
     </q-card>
   </div>
+  <q-snackbar :is-open="state.showSuccessSnackBar" size="medium" position="bottom" color="rgb(56 74 56)" class="border-2 border-green-700 flex flex-row">
+    <p class="mr-0.5">You have successfully minted {{ state.amountInput }} ST!</p>
+  </q-snackbar>
 </template>
 
 <script setup>
@@ -24,16 +30,17 @@ import ConnectButton from '../../components/ConnectButton.vue';
 import { SampleTokenContract } from '../../utils/contracts';
 import { fromWei, toWei } from '../../utils/ethers';
 
+const { fetchBalance } = useWalletStore();
 const { wallet, walletIsConnected, provider } = storeToRefs(useWalletStore());
-const mintingContract = computed(() => SampleTokenContract(provider.value));
+const sampleTokenContract = computed(() => SampleTokenContract(provider.value));
 
 const state = reactive({
   walletBalance: 0,
-  amountInput: null,
+  mintIsLoading: false,
+  amountInput: '',
 });
 
 const walletBalance = computed(() => Number(fromWei(state.walletBalance)));
-const tokenContract = computed(() => mintingContract.value.tokenContract(provider.value));
 
 const fetchData = async () => {
   if (!walletIsConnected.value) {
@@ -41,13 +48,17 @@ const fetchData = async () => {
 
     return;
   }
-  state.walletBalance = await tokenContract.value.balanceOf(wallet.value);
+  state.walletBalance = await sampleTokenContract.value.balanceOf(wallet.value);
+  await fetchBalance();
 };
 
 const mint = async () => {
-  const tx = await mintingContract.value.mint(wallet.value, toWei(state.amountInput.toString()));
+  state.mintIsLoading = true;
+  const tx = await sampleTokenContract.value.mint(wallet.value, toWei(state.amountInput));
   await tx.wait();
   await fetchData();
+  state.mintIsLoading = false;
+  state.amountInput = '';
 };
 
 onMounted(() => {
