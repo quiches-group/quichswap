@@ -25,19 +25,16 @@
 </template>
 
 <script setup>
-import { computed, reactive, onMounted, watch } from 'vue';
+import { computed, reactive } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useWalletStore } from '../../stores/wallet.store';
 import ConnectButton from '../../components/ConnectButton.vue';
-import { SampleTokenContract } from '../../utils/contracts';
 import { fromWei, toWei } from '../../utils/ethers';
 
 const { fetchBalance } = useWalletStore();
-const { wallet, walletIsConnected, provider } = storeToRefs(useWalletStore());
-const sampleTokenContract = computed(() => SampleTokenContract(provider.value));
+const { wallet, stBalance, SampleTokenContract } = storeToRefs(useWalletStore());
 
 const state = reactive({
-  walletBalance: 0,
   mintIsLoading: false,
   amountInput: '',
   mintedValue: 0,
@@ -45,17 +42,7 @@ const state = reactive({
   showSuccessSnackBar: false,
 });
 
-const walletBalance = computed(() => Number(fromWei(state.walletBalance)));
-
-const fetchData = async () => {
-  if (!walletIsConnected.value) {
-    state.walletBalance = 0;
-
-    return;
-  }
-  state.walletBalance = await sampleTokenContract.value.balanceOf(wallet.value);
-  await fetchBalance();
-};
+const walletBalance = computed(() => Number(fromWei(stBalance.value)));
 
 const emptyInput = computed(() => {
   return state.amountInput === '';
@@ -70,7 +57,7 @@ const mint = async () => {
     if (state.amountInput === '0') {
       throw new RangeError();
     }
-    const tx = await sampleTokenContract.value.mint(wallet.value, toWei(state.amountInput));
+    const tx = await SampleTokenContract.value.mint(wallet.value, toWei(state.amountInput));
     await tx.wait();
     state.amountInput = '';
     state.showSuccessSnackBar = true;
@@ -81,15 +68,7 @@ const mint = async () => {
       state.error = 'An error occurred, please try again';
     }
   }
-  await fetchData();
+  await fetchBalance();
   state.mintIsLoading = false;
 };
-
-onMounted(() => {
-  fetchData();
-});
-
-watch(provider, () => {
-  fetchData();
-});
 </script>
