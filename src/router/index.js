@@ -30,6 +30,26 @@ const router = createRouter({
       name: 'Analytics',
       component: () => import('../views/Analytics/AnalyticsView.vue'),
     },
+    {
+      path: '/analytics/pools',
+      name: 'Pools',
+      component: () => import('../views/Analytics/PoolsView.vue'),
+    },
+    {
+      path: '/analytics/pools/:pool',
+      name: 'Pool',
+      component: () => import('../views/Analytics/PoolView.vue'),
+    },
+    {
+      path: '/analytics/tokens',
+      name: 'Tokens',
+      component: () => import('../views/Analytics/TokensView.vue'),
+    },
+    {
+      path: '/analytics/tokens/:token',
+      name: 'Token',
+      component: () => import('../views/Analytics/TokenView.vue'),
+    },
   ],
 });
 
