@@ -7,7 +7,21 @@
         <q-tab tab-index="add-liquidity" class="text-white bg-white bg-opacity-5">+ Add Liquidity</q-tab>
         <q-tab tab-index="remove-liquidity" class="text-white bg-white bg-opacity-5">- Remove Liquidity</q-tab>
       </q-tabs>
-      <add-liquidity v-if="state.selectedTab == 'add-liquidity'" class="mt-5" @transation-started="state.isActiveTx = true" @transation-ended="(state.isActiveTx = true), (state.isTxEnded = true)" />
+      <add-liquidity
+        v-if="state.selectedTab == 'add-liquidity'"
+        class="mt-5"
+        :token-one-wallet-balance="qchWalletBalance"
+        token-one-unit="QCH"
+        :token-two-wallet-balance="stWalletBalance"
+        token-two-unit="ST"
+        :value-of-one-token-one-converted-in-token-two="valueOfOneStConvertedInQch"
+        :value-of-one-token-two-converted-in-token-one="valueOfOneQchConvertedInSt"
+        :token-one-contract="qchContract"
+        :token-two-contract="stContract"
+        :lp-contract="lpContract"
+        @transation-started="state.isActiveTx = true"
+        @transation-ended="(state.isActiveTx = true), (state.isTxEnded = true)"
+      />
       <remove-liquidity
         v-if="state.selectedTab == 'remove-liquidity'"
         class="mt-5"
@@ -41,20 +55,31 @@ import RemoveLiquidity from '../../components/RemoveLiquidity.vue';
 import { useWalletStore } from '../../stores/wallet.store';
 import { fromWei, toWei } from '../../utils/ethers';
 
-const { stqchlpBalance, STQCH_LiquidityProvidingContract } = storeToRefs(useWalletStore());
-
-const lpTokenBalence = computed(() => Number(fromWei(stqchlpBalance.value)));
-const lpContract = computed(() => STQCH_LiquidityProvidingContract.value);
+const { qchBalance, stBalance, stqchlpBalance, SampleTokenContract, QCHTokenContract, STQCH_LiquidityProvidingContract } = storeToRefs(useWalletStore());
 
 const state = reactive({
   selectedTab: 'add-liquidity',
   isActiveTx: false,
   isTxEnded: false,
+  valueOfOneStConvertedInQch: 0,
+  valueOfOneQchConvertedInSt: 0,
   valueOfOneLpTokenConvertedInQch: 0,
   valueOfOneLpTokenConvertedInSt: 0,
 });
 
+const qchContract = computed(() => QCHTokenContract.value);
+const stContract = computed(() => SampleTokenContract.value);
+const lpContract = computed(() => STQCH_LiquidityProvidingContract.value);
+const lpTokenBalence = computed(() => Number(fromWei(stqchlpBalance.value)));
+const qchWalletBalance = computed(() => Number(fromWei(qchBalance.value)));
+const stWalletBalance = computed(() => Number(fromWei(stBalance.value)));
+const valueOfOneStConvertedInQch = computed(() => Number(fromWei(state.valueOfOneStConvertedInQch)));
+const valueOfOneQchConvertedInSt = computed(() => Number(fromWei(state.valueOfOneQchConvertedInSt)));
+
 async function updateBalences() {
+  state.valueOfOneStConvertedInQch = await STQCH_LiquidityProvidingContract.value.getAmountOfToken1(toWei('1'));
+  state.valueOfOneQchConvertedInSt = await STQCH_LiquidityProvidingContract.value.getAmountOfToken2(toWei('1'));
+
   // TODO: update theses two lines to be accurate. Currently wrong method !
   const valueOfOneLpTokenConvertedInQch = await lpContract.value.getAmountOfToken1(toWei('1'));
   const valueOfOneLpTokenConvertedInSt = await lpContract.value.getAmountOfToken2(toWei('1'));

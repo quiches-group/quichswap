@@ -1,117 +1,132 @@
 <template>
   <div class="flex flex-col items-center">
-    <q-input v-model="state.stTokensToStack" class="w-full" background-color="#242526" placeholder="O ST" :outline="true" @input="onStTokensToStackUpdated" />
+    <q-input v-model="state.amountOfTokenOneToStack" class="w-full" background-color="#242526" :placeholder="`0 ${tokenOneUnit}`" :outline="true" @input="onFirstInputUpdated" />
     <p class="mt-2 ml-auto">
       <span class="text-gray-500">Balance: </span>
-      <q-format-number class="inline-block text-white" :value="formattedStWalletBalance" :max-fraction-digits="3" :min-fraction-digits="3" locale="en-US" />
-      <span class="text-white" v-text="` ST`" />
+      <q-format-number class="inline-block text-white" :value="tokenOneWalletBalance" :max-fraction-digits="3" :min-fraction-digits="3" locale="en-US" />
+      <!-- eslint-disable-next-line no-irregular-whitespace -->
+      <span class="text-white"> {{ tokenOneUnit }}</span>
     </p>
 
-    <span class="flex justify-center items-center p-2 pb-3 mx-auto my-5 w-10 h-10 text-3xl font-bold leading-none rounded-full bg-secondary">+</span>
-    <q-input v-model="state.qchTokensToStack" class="w-full" background-color="#242526" placeholder="O QCH" :outline="true" @input="onQchTokensToStackUpdated" />
+    <q-input v-model="state.amountOfTokenTwoToStack" class="w-full" background-color="#242526" :placeholder="`0 ${tokenTwoUnit}`" :outline="true" @input="onSecondInputUpdated" />
     <p class="mt-2 ml-auto">
       <span class="text-gray-500">Balance: </span>
-      <q-format-number class="inline-block text-white" :value="formattedQchWalletBalance" :max-fraction-digits="3" :min-fraction-digits="3" locale="en-US" />
-      <span class="text-white" v-text="` QCH`" />
+      <q-format-number class="inline-block text-white" :value="tokenTwoWalletBalance" :max-fraction-digits="3" :min-fraction-digits="3" locale="en-US" />
+      <!-- eslint-disable-next-line no-irregular-whitespace -->
+      <span class="text-white"> {{ tokenTwoUnit }}</span>
     </p>
 
     <div class="flex flex-col p-4 mt-7 w-full rounded-lg bg-secondary">
       <p class="flex justify-between">
-        <span>1 ST per QCH</span>
-        <q-format-number class="inline-block text-white" :value="formattedStValueInQch" :max-fraction-digits="3" :min-fraction-digits="3" locale="en-US" />
+        <span>1 {{ tokenTwoUnit }} per {{ tokenOneUnit }}</span>
+        <q-format-number class="inline-block text-white" :value="valueOfOneTokenOneConvertedInTokenTwo" :max-fraction-digits="3" :min-fraction-digits="3" locale="en-US" />
       </p>
       <p class="flex justify-between mt-2">
-        <span>1 QCH per ST</span>
-        <q-format-number class="inline-block text-white" :value="formattedQchValueInSt" :max-fraction-digits="3" :min-fraction-digits="3" locale="en-US" />
+        <span>1 {{ tokenOneUnit }} per {{ tokenTwoUnit }}</span>
+        <q-format-number class="inline-block text-white" :value="valueOfOneTokenTwoConvertedInTokenOne" :max-fraction-digits="3" :min-fraction-digits="3" locale="en-US" />
       </p>
     </div>
 
-    <q-button class="mt-5" :disabled="state.stTokensToStack === '' && state.qchTokensToStack === ''" :loading="state.isAddingLiquidity" @click="addLiquidity">Add liquidity</q-button>
-
-    <q-snackbar :is-open="state.isAddingLiquidity" size="medium" position="bottom" color="#FFB883" class="flex flex-row border-2" style="border-color: #ffb883">
-      <p class="mr-0.5">Waiting transations ends. Please follow your wallet instructions.</p>
-    </q-snackbar>
-
-    <q-snackbar :is-open="state.isSuccessfullyAddLiquidity" size="medium" position="bottom" color="#42B883" class="flex flex-row border-2 border-primary">
-      <p class="mr-0.5">Transations ends successfully. Your liquidity has been added</p>
-    </q-snackbar>
+    <q-button class="mt-5" :disabled="state.amountOfTokenOneToStack === '' && state.amountOfTokenTwoToStack === ''" :loading="state.isAddingLiquidity" @click="addLiquidity">Add liquidity</q-button>
   </div>
 </template>
 
 <script setup>
 /* eslint-disable camelcase */
-import { computed, reactive, onMounted } from 'vue';
-import { storeToRefs } from 'pinia';
-import { useWalletStore } from '../stores/wallet.store';
+import { reactive } from 'vue';
 import { fromWei, toWei } from '../utils/ethers';
 
-const { stBalance, qchBalance, STQCH_LiquidityProvidingContract, SampleTokenContract, QCHTokenContract } = storeToRefs(useWalletStore());
+const emit = defineEmits(['transationStarted', 'transationEnded']);
+
+const props = defineProps({
+  tokenOneWalletBalance: {
+    type: Number,
+    required: true,
+  },
+  tokenOneUnit: {
+    type: String,
+    required: true,
+  },
+  tokenTwoWalletBalance: {
+    type: Number,
+    required: true,
+  },
+  tokenTwoUnit: {
+    type: String,
+    required: true,
+  },
+  valueOfOneTokenOneConvertedInTokenTwo: {
+    type: Number,
+    required: true,
+  },
+  valueOfOneTokenTwoConvertedInTokenOne: {
+    type: Number,
+    required: true,
+  },
+  tokenOneContract: {
+    type: Object,
+    required: true,
+  },
+  tokenTwoContract: {
+    type: Object,
+    required: true,
+  },
+  lpContract: {
+    type: Object,
+    required: true,
+  },
+});
 
 const state = reactive({
-  stWalletBalance: 0,
-  qchWalletBalance: 0,
-  valueOfOneQchInSt: 0,
-  valueOfOneStInQch: 0,
-  stTokensToStack: '',
-  qchTokensToStack: '',
+  amountOfTokenOneToStack: '',
+  amountOfTokenTwoToStack: '',
   isAddingLiquidity: false,
-  isSuccessfullyAddLiquidity: false,
 });
 
-const formattedStWalletBalance = computed(() => Number(fromWei(stBalance.value)));
-const formattedQchWalletBalance = computed(() => Number(fromWei(qchBalance.value)));
-const formattedStValueInQch = computed(() => Number(fromWei(state.valueOfOneStInQch)));
-const formattedQchValueInSt = computed(() => Number(fromWei(state.valueOfOneQchInSt)));
-
-onMounted(async () => {
-  state.valueOfOneStInQch = await STQCH_LiquidityProvidingContract.value.getAmountOfToken1(toWei('1'));
-  state.valueOfOneQchInSt = await STQCH_LiquidityProvidingContract.value.getAmountOfToken2(toWei('1'));
-});
-
-async function onStTokensToStackUpdated(event) {
+async function onFirstInputUpdated(event) {
   const newValue = event.target.value;
 
   if (newValue === '0' || newValue === '') {
-    state.qchTokensToStack = newValue;
+    state.amountOfTokenTwoToStack = newValue;
     return;
   }
 
   // TODO: add regex to invalid other inputs than digits
 
-  const newQchTokensToStackValue = await STQCH_LiquidityProvidingContract.value.getAmountOfToken1(toWei(newValue));
-  state.qchTokensToStack = fromWei(newQchTokensToStackValue);
+  const newTokenTwoAmountToStackValue = await props.lpContract.getAmountOfToken1(toWei(newValue));
+  state.amountOfTokenTwoToStack = fromWei(newTokenTwoAmountToStackValue);
 }
-async function onQchTokensToStackUpdated(event) {
+
+async function onSecondInputUpdated(event) {
   const newValue = event.target.value;
 
   if (newValue === '0' || newValue === '') {
-    state.stTokensToStack = newValue;
+    state.amountOfTokenOneToStack = newValue;
     return;
   }
 
   // TODO: add regex to invalid other inputs than digits
 
-  const newStTokensToStackValue = await STQCH_LiquidityProvidingContract.value.getAmountOfToken2(toWei(newValue));
-  state.stTokensToStack = fromWei(newStTokensToStackValue);
+  const newTokenOneAmountToStackValue = await props.lpContract.getAmountOfToken2(toWei(newValue));
+  state.amountOfTokenOneToStack = fromWei(newTokenOneAmountToStackValue);
 }
 
 async function addLiquidity() {
   state.isAddingLiquidity = true;
-  const STtransaction = await SampleTokenContract.value.approve(STQCH_LiquidityProvidingContract.value.address, toWei(state.stTokensToStack));
-  await STtransaction.wait();
-  console.log('ST contract tx passed !');
+  emit('transationStarted');
 
-  const QCHtransaction = await QCHTokenContract.value.approve(STQCH_LiquidityProvidingContract.value.address, toWei(state.qchTokensToStack));
-  await QCHtransaction.wait();
-  console.log('QCH contract tx passed !');
+  const tokenOneTransation = await props.tokenOneContract.value.approve(props.lpContract.value.address, toWei(state.amountOfTokenOneToStack));
+  await tokenOneTransation.wait();
 
-  const LPtransation = await STQCH_LiquidityProvidingContract.value.addLiquidity(toWei(state.stTokensToStack), toWei(state.qchTokensToStack));
+  const tokenTwoTransation = await props.tokenTwoContract.value.approve(props.lpContract.value.address, toWei(state.amountOfTokenTwoToStack));
+  await tokenTwoTransation.wait();
+
+  const LPtransation = await props.lpContract.value.addLiquidity(toWei(state.amountOfTokenOneToStack), toWei(state.amountOfTokenTwoToStack));
   await LPtransation.wait();
-  console.log('LP contract tx passed !');
 
   state.isAddingLiquidity = false;
-  state.qchTokensToStack = '';
-  state.stTokensToStack = '';
-  state.isSuccessfullyAddLiquidity = true;
+  state.amountOfTokenOneToStack = '';
+  state.amountOfTokenTwoToStack = '';
+  emit('transationEnded');
 }
 </script>
