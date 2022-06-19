@@ -1,9 +1,17 @@
 <template>
-  <div class="p-1 inline-flex rounded-full bg-neutral-800 border border-neutral-700">
-    <router-link class="tab" :class="{ 'tab-active': activeTab === 'overview' }" :to="{ name: 'Analytics' }">Overview</router-link>
-    <router-link class="tab" :class="{ 'tab-active': activeTab === 'pools' }" :to="{ name: 'Pools' }">Pools</router-link>
-    <router-link class="tab" :class="{ 'tab-active': activeTab === 'tokens' }" :to="{ name: 'Tokens' }">Tokens</router-link>
-  </div>
+  <nav class="p-1 inline-flex rounded-full bg-neutral-800 border border-neutral-700">
+    <ul class="flex">
+      <li class="tab" :class="{ 'tab-active': activeTab === 'overview' }">
+        <router-link :to="{ name: 'Analytics' }">Overview</router-link>
+      </li>
+      <li class="tab" :class="{ 'tab-active': activeTab === 'pools' }">
+        <router-link :to="{ name: 'Pools' }">Pools</router-link>
+      </li>
+      <li class="tab" :class="{ 'tab-active': activeTab === 'tokens' }">
+        <router-link :to="{ name: 'Tokens' }">Tokens</router-link>
+      </li>
+    </ul>
+  </nav>
 </template>
 
 <script>
