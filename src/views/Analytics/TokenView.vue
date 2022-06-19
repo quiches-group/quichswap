@@ -31,8 +31,9 @@
                 <h2 class="graph-selection" :class="{ active: selectedGraph === 'price' }" @click="selectedGraph = 'price'">Price</h2>
               </div>
             </template>
-            <graph-volume v-if="selectedGraph === 'volume'" :data="test" x-axis-formatter="{dd}" />
-            <graph-liquidity v-else :data="test" x-axis-formatter="{dd}" />
+            <graph-volume v-if="selectedGraph === 'volume'" :data="volumeData" x-axis-formatter="{dd}" :unit="$route.params.token" />
+            <graph-liquidity v-else-if="selectedGraph === 'price'" :data="priceData" x-axis-formatter="{dd}" :unit="$route.params.token" />
+            <graph-liquidity v-else :data="volumeData" x-axis-formatter="{dd}" :unit="$route.params.token" />
           </graph-card>
         </q-card>
       </q-col>
@@ -49,6 +50,7 @@
 </template>
 
 <script>
+import * as moment from 'moment';
 import { mapState } from 'pinia';
 import { useAnalyticsStore } from '../../stores/analytics.store';
 import TableTokens from './compoments/tables/TableTokens.vue';
@@ -71,7 +73,7 @@ export default {
         { text: 'Month', value: 'month' },
       ],
       selectedTab: 'day',
-      test: [
+      volumeData: [
         ['2022-06-10', 200000000],
         ['2022-06-11', 560000000],
         ['2022-06-12', 340000000],
@@ -82,6 +84,7 @@ export default {
         ['2022-06-17', 300000000],
         ['2022-06-18', 100000000],
       ],
+      priceData: [],
     };
   },
   computed: {
@@ -94,6 +97,47 @@ export default {
     },
     pools() {
       return this.filterPools(this.$route.params.token);
+    },
+  },
+  watch: {
+    selectedTab() {
+      this.fetchPriceGraph();
+    },
+  },
+  beforeMount() {
+    this.fetchPriceGraph();
+  },
+  methods: {
+    fetchPriceGraph() {
+      const startDate = moment();
+
+      if (this.selectedTab === 'day') {
+        startDate.subtract(1, 'days');
+      } else if (this.selectedTab === 'week') {
+        startDate.subtract(1, 'weeks');
+      } else if (this.selectedTab === 'month') {
+        startDate.subtract(1, 'months');
+      }
+
+      this.axios
+        .get('/price/graph', {
+          params: {
+            symbol: this.$route.params.token,
+            start_date: startDate.unix(),
+            end_date: moment().unix(),
+          },
+        })
+        .then((response) => {
+          this.priceData = response.data;
+
+          // Weird fix, should be fixed in library
+          if (this.selectedGraph === 'price') {
+            this.selectedGraph = 'volume';
+            this.$nextTick(() => {
+              this.selectedGraph = 'price';
+            });
+          }
+        });
     },
   },
 };
