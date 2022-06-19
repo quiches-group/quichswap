@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="px-4">
     <h1 class="mt-10 text-4xl font-medium text-center">Liquidity Providing</h1>
     <p v-if="state.selectedTab == 'add-liquidity'" class="text-lg font-light text-center text-gray-200">Add liquidity to receive LP tokens</p>
     <p v-if="state.selectedTab == 'remove-liquidity'" class="text-lg font-light text-center text-gray-200">Burn LP tokens to cash out your stacked tokens</p>
