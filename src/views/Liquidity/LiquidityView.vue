@@ -11,6 +11,13 @@
       <remove-liquidity
         v-if="state.selectedTab == 'remove-liquidity'"
         class="mt-5"
+        lp-token-unit="LP"
+        token-one-unit="QCH"
+        token-two-unit="QCH"
+        :lp-token-balence="lpTokenBalence"
+        :lp-contract="lpContract"
+        :value-of-one-lp-token-converted-in-token-one="state.valueOfOneLpTokenConvertedInQch"
+        :value-of-one-lp-token-converted-in-token-two="state.valueOfOneLpTokenConvertedInSt"
         @transation-started="state.isActiveTx = true"
         @transation-ended="(state.isActiveTx = true), (state.isTxEnded = true)"
       />
@@ -26,13 +33,36 @@
 </template>
 
 <script setup>
-import { reactive } from 'vue';
+/* eslint-disable camelcase */
+import { storeToRefs } from 'pinia';
+import { computed, onMounted, reactive } from 'vue';
 import AddLiquidity from '../../components/AddLiquidity.vue';
 import RemoveLiquidity from '../../components/RemoveLiquidity.vue';
+import { useWalletStore } from '../../stores/wallet.store';
+import { fromWei, toWei } from '../../utils/ethers';
+
+const { stqchlpBalance, STQCH_LiquidityProvidingContract } = storeToRefs(useWalletStore());
+
+const lpTokenBalence = computed(() => Number(fromWei(stqchlpBalance.value)));
+const lpContract = computed(() => STQCH_LiquidityProvidingContract.value);
 
 const state = reactive({
   selectedTab: 'add-liquidity',
   isActiveTx: false,
   isTxEnded: false,
+  valueOfOneLpTokenConvertedInQch: 0,
+  valueOfOneLpTokenConvertedInSt: 0,
 });
+
+async function updateBalences() {
+  // TODO: update theses two lines to be accurate. Currently wrong method !
+  const valueOfOneLpTokenConvertedInQch = await lpContract.value.getAmountOfToken1(toWei('1'));
+  const valueOfOneLpTokenConvertedInSt = await lpContract.value.getAmountOfToken2(toWei('1'));
+
+  state.valueOfOneLpTokenConvertedInQch = Number(fromWei(valueOfOneLpTokenConvertedInQch));
+  state.valueOfOneLpTokenConvertedInSt = Number(fromWei(valueOfOneLpTokenConvertedInSt));
+}
+onMounted(updateBalences);
+
+// TODO: auto refresh balences
 </script>

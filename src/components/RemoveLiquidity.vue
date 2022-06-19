@@ -3,18 +3,19 @@
     <q-input v-model="state.lpTokenToRemove" class="w-full" background-color="#242526" placeholder="O LP" :outline="true" />
     <p class="mt-2 ml-auto">
       <span class="text-gray-500">Balance: </span>
-      <q-format-number class="inline-block text-white" :value="formattedStQchLpWalletBalance" :max-fraction-digits="3" :min-fraction-digits="3" locale="en-US" />
-      <span class="text-white" v-text="` LP`" />
+      <q-format-number class="inline-block text-white" :value="lpTokenBalence" :max-fraction-digits="3" :min-fraction-digits="3" locale="en-US" />
+      <!-- eslint-disable-next-line no-irregular-whitespace -->
+      <span class="text-white"> {{ lpTokenUnit }}</span>
     </p>
 
     <div class="flex flex-col p-4 mt-7 w-full rounded-lg bg-secondary">
       <p class="flex justify-between">
-        <span>1 LP per QCH</span>
-        <q-format-number class="inline-block text-white" :value="formattedLpValueInQch" :max-fraction-digits="3" :min-fraction-digits="3" locale="en-US" />
+        <span>1 {{ lpTokenUnit }} per {{ tokenOneUnit }}</span>
+        <q-format-number class="inline-block text-white" :value="valueOfOneLpTokenConvertedInTokenOne" :max-fraction-digits="3" :min-fraction-digits="3" locale="en-US" />
       </p>
       <p class="flex justify-between mt-2">
-        <span>1 LP per ST</span>
-        <q-format-number class="inline-block text-white" :value="formattedLpValueInSt" :max-fraction-digits="3" :min-fraction-digits="3" locale="en-US" />
+        <span>1 {{ lpTokenUnit }} per {{ tokenTwoUnit }}</span>
+        <q-format-number class="inline-block text-white" :value="valueOfOneLpTokenConvertedInTokenTwo" :max-fraction-digits="3" :min-fraction-digits="3" locale="en-US" />
       </p>
     </div>
 
@@ -23,42 +24,54 @@
 </template>
 
 <script setup>
-/* eslint-disable camelcase */
-import { computed, reactive, onMounted } from 'vue';
-import { storeToRefs } from 'pinia';
-import { useWalletStore } from '../stores/wallet.store';
-import { fromWei, toWei } from '../utils/ethers';
+import { reactive } from 'vue';
+import { toWei } from '../utils/ethers';
 
 const emit = defineEmits(['transationStarted', 'transationEnded']);
 
-const { stqchlpBalance, STQCH_LiquidityProvidingContract } = storeToRefs(useWalletStore());
-
-const state = reactive({
-  valueOfOneLpInQch: 0,
-  valueOfOneLpInST: 0,
-  lpTokenToRemove: '',
-  isRemovingLiquidity: false,
+const props = defineProps({
+  lpTokenUnit: {
+    type: String,
+    required: true,
+  },
+  tokenOneUnit: {
+    type: String,
+    required: true,
+  },
+  tokenTwoUnit: {
+    type: String,
+    required: true,
+  },
+  lpTokenBalence: {
+    type: Number,
+    required: true,
+  },
+  lpContract: {
+    type: Object,
+    required: true,
+  },
+  valueOfOneLpTokenConvertedInTokenOne: {
+    type: Number,
+    required: true,
+  },
+  valueOfOneLpTokenConvertedInTokenTwo: {
+    type: Number,
+    required: true,
+  },
 });
 
-const formattedStQchLpWalletBalance = computed(() => Number(fromWei(stqchlpBalance.value)));
-const formattedLpValueInQch = computed(() => Number(fromWei(state.valueOfOneLpInQch)));
-const formattedLpValueInSt = computed(() => Number(fromWei(state.valueOfOneLpInST)));
-
-onMounted(async () => {
-  // TODO: update theses lines to be accurate. Currently wrong method !
-  state.valueOfOneLpInQch = await STQCH_LiquidityProvidingContract.value.getAmountOfToken1(toWei('1'));
-  state.valueOfOneLpInST = await STQCH_LiquidityProvidingContract.value.getAmountOfToken2(toWei('1'));
+const state = reactive({
+  lpTokenToRemove: '',
+  isRemovingLiquidity: false,
 });
 
 async function removeLiquidity() {
   state.isRemovingLiquidity = true;
   emit('transationStarted');
 
-  const LPtransation = await STQCH_LiquidityProvidingContract.value.removeLiquidity(toWei(state.lpTokenToRemove));
-  await LPtransation.wait();
+  const lpTransation = await props.lpContract.removeLiquidity(toWei(state.lpTokenToRemove));
+  await lpTransation.wait();
 
-  state.qchTokensToStack = '';
-  state.lpTokenToRemove = '';
   emit('transationEnded');
   state.isRemovingLiquidity = false;
 }
