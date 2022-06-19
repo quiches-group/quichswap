@@ -1,7 +1,8 @@
 <template>
   <div>
     <h1 class="mt-10 text-4xl font-medium text-center">Liquidity Providing</h1>
-    <p class="text-lg font-light text-center">Add liquidity to receive LP tokens</p>
+    <p v-if="state.selectedTab == 'add-liquidity'" class="text-lg font-light text-center text-gray-200">Add liquidity to receive LP tokens</p>
+    <p v-if="state.selectedTab == 'remove-liquidity'" class="text-lg font-light text-center text-gray-200">Burn LP tokens to cash out your stacked tokens</p>
     <div class="flex flex-col px-4 pt-2 pb-5 mx-auto mt-5 max-w-xs rounded-lg bg-tertiary">
       <q-tabs :selected-index="state.selectedTab" @select-index="state.selectedTab = $event">
         <q-tab tab-index="add-liquidity" class="text-white bg-white bg-opacity-5">+ Add Liquidity</q-tab>
