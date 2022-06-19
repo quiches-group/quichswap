@@ -43,7 +43,7 @@ export default {
   emits: ['click:pool'],
   methods: {
     getTokenLogo(poolName) {
-      return new URL(`../../../assets/tokens/${poolName.toLowerCase()}.png`, import.meta.url).href;
+      return new URL(`/src/assets/tokens/${poolName.toLowerCase()}.png`, import.meta.url).href;
     },
   },
 };
