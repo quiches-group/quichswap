@@ -40,7 +40,7 @@ export default {
   emits: ['click:token'],
   methods: {
     getTokenLogo(token) {
-      return new URL(`../../../assets/tokens/${token.name.toLowerCase()}.png`, import.meta.url).href;
+      return new URL(`/src/assets/tokens/${token.name.toLowerCase()}.png`, import.meta.url).href;
     },
   },
 };

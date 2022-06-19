@@ -1,6 +1,7 @@
 <template>
   <div class="container mx-auto px-4">
     <q-row class="m-0">
+      <q-col class="p-3 mb-5" :cols="12"> test </q-col>
       <q-col class="p-3 mb-5" :cols="12">
         <h2 class="text-3xl">Quichswap Exchange Analytics</h2>
         <h3 class="text-xl font-light text-neutral-400">Trade tokens in an instant</h3>
@@ -39,11 +40,11 @@
 
 <script>
 import * as moment from 'moment';
-import GraphLiquidity from './compoments/GraphLiquidity.vue';
-import GraphVolume from './compoments/GraphVolume.vue';
-import GraphCard from './compoments/GraphCard.vue';
-import TableTokens from './compoments/TableTokens.vue';
-import TablePools from './compoments/TablePools.vue';
+import GraphLiquidity from './compoments/graphs/GraphLiquidity.vue';
+import GraphVolume from './compoments/graphs/GraphVolume.vue';
+import GraphCard from './compoments/graphs/GraphCard.vue';
+import TableTokens from './compoments/tables/TableTokens.vue';
+import TablePools from './compoments/tables/TablePools.vue';
 
 export default {
   name: 'AnalyticsView',
