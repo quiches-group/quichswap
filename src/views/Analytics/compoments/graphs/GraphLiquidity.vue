@@ -1,5 +1,5 @@
 <template>
-  <q-graph :options="options" :height="500" />
+  <q-graph :options="options" :height="400" />
 </template>
 
 <script>

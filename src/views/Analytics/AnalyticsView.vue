@@ -1,7 +1,7 @@
 <template>
   <div class="container mx-auto px-4">
     <q-row class="m-0">
-      <q-col class="p-3 mb-5" :cols="12"> test </q-col>
+      <q-col class="p-3 mb-5" :cols="12"><page-selector /></q-col>
       <q-col class="p-3 mb-5" :cols="12">
         <h2 class="text-3xl">Quichswap Exchange Analytics</h2>
         <h3 class="text-xl font-light text-neutral-400">Trade tokens in an instant</h3>
@@ -19,19 +19,19 @@
       <q-col class="p-3 mt-10" :cols="12">
         <div class="mb-10 flex justify-between items-center">
           <h2 class="text-3xl">Top Tokens</h2>
-          <q-button size="small">See All</q-button>
+          <q-button size="small" @click="$router.push({ name: 'Pools' })">See All</q-button>
         </div>
         <q-card class="w-full bg-neutral-800 border-neutral-700 border">
-          <table-tokens :tokens="tokens" @click:token="log" />
+          <table-tokens :tokens="tokens" @click:token="$router.push({ name: 'Token', params: { token: $event.name } })" />
         </q-card>
       </q-col>
       <q-col class="p-3 mt-10" :cols="12">
         <div class="mb-10 flex justify-between items-center">
-          <h2 class="text-3xl">Top Tokens</h2>
-          <q-button size="small">See All</q-button>
+          <h2 class="text-3xl">Top Pools</h2>
+          <q-button size="small" @click="$router.push({ name: 'Tokens' })">See All</q-button>
         </div>
         <q-card class="w-full bg-neutral-800 border-neutral-700 border">
-          <table-pools :pools="tokenPools" @click:pool="log" />
+          <table-pools :pools="tokenPools" @click:pool="$router.push({ name: 'Pool', params: { pool: $event.names.join('-') } })" />
         </q-card>
       </q-col>
     </q-row>
@@ -39,16 +39,18 @@
 </template>
 
 <script>
-import * as moment from 'moment';
+import { mapActions, mapState } from 'pinia';
+import { useAnalyticsStore } from '../../stores/analytics.store';
 import GraphLiquidity from './compoments/graphs/GraphLiquidity.vue';
 import GraphVolume from './compoments/graphs/GraphVolume.vue';
 import GraphCard from './compoments/graphs/GraphCard.vue';
 import TableTokens from './compoments/tables/TableTokens.vue';
 import TablePools from './compoments/tables/TablePools.vue';
+import PageSelector from './compoments/PageSelector.vue';
 
 export default {
   name: 'AnalyticsView',
-  components: { TablePools, TableTokens, GraphCard, GraphLiquidity, GraphVolume },
+  components: { PageSelector, TablePools, TableTokens, GraphCard, GraphLiquidity, GraphVolume },
   data() {
     return {
       tabs: [
@@ -57,65 +59,16 @@ export default {
         { text: 'Month', value: 'month' },
       ],
       selectedTab: 'day',
-      liquidityData: [],
-      volumeData: [
-        ['2022-06-10', 200000000],
-        ['2022-06-11', 560000000],
-        ['2022-06-12', 340000000],
-        ['2022-06-13', 580000000],
-        ['2022-06-14', 250000000],
-        ['2022-06-15', 300000000],
-        ['2022-06-16', 450000000],
-        ['2022-06-17', 300000000],
-        ['2022-06-18', 100000000],
-      ],
-      tokens: [
-        {
-          name: 'ST',
-          price: '$9,890.00',
-          priceChange: 3.54,
-          volume: '$9,890.00',
-          liquidity: '$9,890.00',
-        },
-        {
-          name: 'QCH',
-          price: '$9,890.00',
-          priceChange: -2.21,
-          volume: '$9,890.00',
-          liquidity: '$9,890.00',
-        },
-      ],
-      tokenPools: [
-        {
-          names: ['ST', 'QCH'],
-          price: '$95,543.00',
-          unlocked_apr: '50%',
-          locked_apr: '110%',
-          liquidity: '$9,890.00',
-          fees: '$490.00',
-        },
-      ],
     };
   },
+  computed: {
+    ...mapState(useAnalyticsStore, ['liquidityData', 'volumeData', 'tokens', 'tokenPools']),
+  },
   beforeMount() {
-    const date = moment().subtract(1, 'day');
-
-    while (date.isSameOrBefore(moment())) {
-      let newValue = (this.liquidityData[this.liquidityData.length - 1] || [0, 0])[1] || 1000000;
-      if (Math.random() < 0.5) {
-        newValue += Math.round(Math.random() * 1000000);
-      } else {
-        newValue = Math.max(newValue - Math.round(Math.random() * 1000000), 1000000);
-      }
-
-      this.liquidityData.push([date.format('YYYY-MM-DD HH:mm:ss'), newValue]);
-      date.add(1, 'hour');
-    }
+    this.fetch();
   },
   methods: {
-    log(data) {
-      console.log(data);
-    },
+    ...mapActions(useAnalyticsStore, ['fetch']),
   },
 };
 </script>
