@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col items-center px-4 py-5 mx-auto mt-5 max-w-xs rounded-lg bg-tertiary">
+  <div class="flex flex-col items-center">
     <q-input v-model="state.stTokensToStack" class="w-full" background-color="#242526" placeholder="O ST" :outline="true" @input="onStTokensToStackUpdated" />
     <p class="mt-2 ml-auto">
       <span class="text-gray-500">Balance: </span>
