@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col items-center">
-    <q-input v-model="state.amountOfTokenOneToStack" class="w-full" background-color="#242526" :placeholder="`0 ${tokenOneUnit}`" :outline="true" @input="onFirstInputUpdated" />
+    <q-input v-model="state.amountOfTokenOneToStack" class="w-full" background-color="#242526" :placeholder="`0 ${tokenOneUnit}`" :outline="true" @change="onFirstInputUpdated" />
     <p class="mt-2 ml-auto">
       <span class="text-gray-500">Balance: </span>
       <q-format-number class="inline-block text-white" :value="tokenOneWalletBalance" :max-fraction-digits="3" :min-fraction-digits="3" locale="en-US" />
@@ -8,7 +8,7 @@
       <span class="text-white"> {{ tokenOneUnit }}</span>
     </p>
 
-    <q-input v-model="state.amountOfTokenTwoToStack" class="w-full" background-color="#242526" :placeholder="`0 ${tokenTwoUnit}`" :outline="true" @input="onSecondInputUpdated" />
+    <q-input v-model="state.amountOfTokenTwoToStack" class="w-full" background-color="#242526" :placeholder="`0 ${tokenTwoUnit}`" :outline="true" @change="onSecondInputUpdated" />
     <p class="mt-2 ml-auto">
       <span class="text-gray-500">Balance: </span>
       <q-format-number class="inline-block text-white" :value="tokenTwoWalletBalance" :max-fraction-digits="3" :min-fraction-digits="3" locale="en-US" />
