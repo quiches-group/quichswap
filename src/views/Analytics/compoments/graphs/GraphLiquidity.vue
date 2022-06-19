@@ -12,6 +12,10 @@ export default {
       type: Array,
       required: true,
     },
+    unit: {
+      type: String,
+      required: true,
+    },
     xAxisFormatter: {
       type: String,
       default: '{dd}',
@@ -67,7 +71,7 @@ export default {
         },
         series: [
           {
-            name: 'Union Ads',
+            name: this.unit,
             type: 'line',
             stack: 'Total',
             smooth: true,

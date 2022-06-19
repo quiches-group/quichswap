@@ -1,5 +1,5 @@
 <template>
-  <q-navbar :is-open="state.navbarIsOpen">
+  <q-navbar class="h-auto" :is-open="state.navbarIsOpen">
     <q-navbar-content class="flex items-start">
       <q-menu class="p-4 flex-1">
         <q-menu-item><router-link :to="'/mint'">Mint</router-link></q-menu-item>

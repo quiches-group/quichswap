@@ -12,6 +12,10 @@ export default {
       type: Array,
       required: true,
     },
+    unit: {
+      type: String,
+      required: true,
+    },
     xAxisFormatter: {
       type: String,
       default: '{dd}',
@@ -59,6 +63,7 @@ export default {
         },
         series: [
           {
+            name: this.unit,
             data: this.data,
             type: 'bar',
             color: 'rgba(64, 184, 131, 1)',
