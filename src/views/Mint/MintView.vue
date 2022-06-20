@@ -1,7 +1,7 @@
 <template>
-  <div class="flex flex-col items-center p-5">
+  <div class="h-screen flex justify-center items-center p-5">
     <q-card class="flex flex-col gap-5 p-10 bg-[#2b2d2e] outline-1">
-      <div class="flex flex-row">
+      <div class="flex flex-row items-start flex-none">
         <div class="flex-none">Your balance:</div>
         <span class="flex-1" />
         <div class="flex-none">
@@ -22,10 +22,12 @@
       You have successfully minted <b>{{ state.mintedValue }} ST</b> to your wallet!
     </p>
   </q-snackbar>
+  <canvas ref="confettiCanvas" class="fixed top-0 left-0 h-screen w-screen pointer-events-none" />
 </template>
 
 <script setup>
-import { computed, reactive } from 'vue';
+import * as confetti from 'canvas-confetti';
+import { computed, onMounted, reactive, ref } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useWalletStore } from '../../stores/wallet.store';
 import ConnectButton from '../../components/ConnectButton.vue';
@@ -34,12 +36,16 @@ import { fromWei, toWei } from '../../utils/ethers';
 const { fetchBalance } = useWalletStore();
 const { wallet, stBalance, SampleTokenContract } = storeToRefs(useWalletStore());
 
+const confettiCanvas = ref(null);
+
 const state = reactive({
   mintIsLoading: false,
   amountInput: '',
   mintedValue: 0,
   error: '',
   showSuccessSnackBar: false,
+  confetti: null,
+  confettiInterval: null,
 });
 
 const walletBalance = computed(() => Number(fromWei(stBalance.value)));
@@ -47,6 +53,43 @@ const walletBalance = computed(() => Number(fromWei(stBalance.value)));
 const emptyInput = computed(() => {
   return state.amountInput === '';
 });
+
+function randomInRange(min, max) {
+  return Math.random() * (max - min) + min;
+}
+
+const launchConfetti = (duration = 5 * 1000) => {
+  const animationEnd = Date.now() + duration;
+  const defaults = { startVelocity: 20, spread: 360, ticks: 200, decay: 0.93, zIndex: 0 };
+  const colors = ['#78eac4', '#f7c4db', '#ef8bbd', '#cab4ef', '#a183e2', '#ffa585', '#8bb6ef'];
+
+  clearInterval(state.confettiInterval);
+
+  state.confetti({
+    particleCount: 500,
+    spread: 180,
+    startVelocity: 80,
+    ticks: 300,
+    gravity: 2,
+    colors,
+    origin: { y: 0.4 },
+  });
+
+  state.confettiInterval = setInterval(() => {
+    const timeLeft = animationEnd - Date.now();
+
+    if (timeLeft <= 0) {
+      return clearInterval(state.confettiInterval);
+    }
+
+    const particleCount = 100 * (timeLeft / duration);
+
+    state.confetti({ ...defaults, colors, particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } });
+    state.confetti({ ...defaults, colors, particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } });
+
+    return null;
+  }, 300);
+};
 
 const mint = async () => {
   state.error = '';
@@ -61,6 +104,8 @@ const mint = async () => {
     await tx.wait();
     state.amountInput = '';
     state.showSuccessSnackBar = true;
+
+    launchConfetti();
   } catch (err) {
     if (err.code === 'INVALID_ARGUMENT' || err.name === 'RangeError') {
       state.error = 'Please enter a valid amount';
@@ -71,4 +116,8 @@ const mint = async () => {
   await fetchBalance();
   state.mintIsLoading = false;
 };
+
+onMounted(() => {
+  state.confetti = confetti.create(confettiCanvas.value, { resize: true, useWorker: true });
+});
 </script>
