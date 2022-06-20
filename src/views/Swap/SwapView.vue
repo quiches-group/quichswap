@@ -3,17 +3,34 @@
     <q-card class="flex flex-col gap-3 p-10 bg-[#2b2d2e]">
       <div class="text-gray-500 text-base">Swap from:</div>
       <div class="flex flex-1 items-center p-2 rounded-lg" :style="{ backgroundColor: '#242526' }">
-        <q-input v-model="state.fromAmountInput" :disabled="state.swapIsLoading" :error="state.fromError" background-color="#242526" placeholder="Your amount" class="w-full"></q-input>
+        <q-input
+          v-model="state.fromAmountInput"
+          :disabled="state.swapIsLoading"
+          :error="state.fromError"
+          background-color="#242526"
+          placeholder="Your amount"
+          class="w-full flex flex-auto"
+          @change="onFirstInputUpdated"
+        ></q-input>
         <div class="bg-clip-padding rounded-lg bg-gray-100 flex-none">
-          <q-dropdown bg-color="#242526" text-color="white" placeholder="Token" :options="tokens" accent-color="darkGray" @select="selectFromToken"></q-dropdown>
+          <q-dropdown
+            class="disabled:opacity-80"
+            :disabled="state.swapIsLoading"
+            bg-color="#242526"
+            text-color="white"
+            placeholder="Token"
+            :options="tokens"
+            accent-color="darkGray"
+            @select="selectFromToken"
+          ></q-dropdown>
         </div>
       </div>
       <div class="flex flex-row text-xs">
         <span class="flex-1" />
         <div class="mr-2 text-gray-500">Balance:</div>
         <div class="flex-none">
-          <q-format-number class="inline-block" :value="state.fromTokenBalance[0]" :max-fraction-digits="1" :min-fraction-digits="1" locale="en-US" />
-          <span class="text-white ml-1" v-text="state.fromTokenBalance[1]" />
+          <q-format-number class="inline-block" :value="state.fromTokenBalance" :max-fraction-digits="3" :min-fraction-digits="3" locale="en-US" />
+          <span class="text-white ml-1" v-text="state.fromTokenSymbol" />
         </div>
       </div>
       <div class="flex flex-col items-center mt-3">
@@ -21,17 +38,25 @@
       </div>
       <div class="text-gray-500">Swap to:</div>
       <div class="flex flex-1 items-center p-2 rounded-lg" :style="{ backgroundColor: '#242526' }">
-        <q-input v-model="state.toAmountInput" :disabled="state.swapIsLoading" :error="state.toError" background-color="#242526" placeholder="Amount" class="w-full"></q-input>
+        <q-input
+          v-model="state.toAmountInput"
+          :disabled="state.swapIsLoading"
+          :error="state.toError"
+          background-color="#242526"
+          placeholder="Amount"
+          class="w-full"
+          @change="onSecondInputUpdated"
+        ></q-input>
         <div class="bg-clip-padding rounded-lg bg-gray-100 flex-none">
-          <q-dropdown bg-color="#242526" text-color="white" placeholder="Token" :options="tokens" accent-color="darkGray" @select="selectToToken"></q-dropdown>
+          <q-dropdown :disabled="state.swapIsLoading" bg-color="#242526" text-color="white" placeholder="Token" :options="tokens" accent-color="darkGray" @select="selectToToken"></q-dropdown>
         </div>
       </div>
       <div class="flex flex-row text-xs mb-5">
         <span class="flex-1" />
         <div class="mr-2 text-gray-500">Balance:</div>
         <div class="flex-none">
-          <q-format-number class="inline-block" :value="state.toTokenBalance[0]" :max-fraction-digits="1" :min-fraction-digits="1" locale="en-US" />
-          <span class="text-white ml-1" v-text="state.toTokenBalance[1]" />
+          <q-format-number class="inline-block" :value="state.toTokenBalance" :max-fraction-digits="3" :min-fraction-digits="3" locale="en-US" />
+          <span class="text-white ml-1" v-text="state.toTokenSymbol" />
         </div>
       </div>
 
@@ -41,14 +66,14 @@
     </q-card>
   </div>
 
-  <q-snackbar :model-value="state.showSuccessSnackBar" size="medium" position="bottom" color="info" class="border-0 flex flex-row">
+  <q-snackbar :model-value="state.showSuccessSnackBar" :dismissable="true" size="medium" position="bottom" color="info" class="border-0 flex flex-row">
     <p class="mr-0.5"></p>
   </q-snackbar>
 </template>
 
 <script setup>
-/* eslint-disable camelcase,no-unused-vars */
-import { reactive, computed } from 'vue';
+/* eslint-disable camelcase */
+import { computed, reactive } from 'vue';
 import { storeToRefs } from 'pinia';
 import ConnectButton from '../../components/ConnectButton.vue';
 import SwapButton from './SwapButton.vue';
@@ -82,24 +107,62 @@ const state = reactive({
   showSuccessSnackBar: false,
   fromToken: null,
   toToken: null,
-  fromTokenBalance: [],
-  toTokenBalance: [],
+  fromTokenBalance: 0,
+  fromTokenSymbol: '',
+  toTokenBalance: 0,
+  toTokenSymbol: '',
 });
 
 const emptyInput = computed(() => {
-  return state.fromAmountInput !== '' && state.fromToken !== null && state.toToken !== null;
+  return state.fromAmountInput !== '' && state.fromToken !== null && state.toToken !== null && state.toTokenSymbol !== state.fromTokenSymbol;
 });
 
-const checkBalance = computed(() => {
+const enoughBalance = computed(() => {
   return state.fromAmountInput <= state.fromTokenBalance;
 });
+
+const getAmountToSwap = async (newFormattedValue) => {
+  let newTokenAmountToSwapValue;
+  if (state.fromTokenSymbol === 'QCH' && state.toTokenSymbol === 'ST') {
+    newTokenAmountToSwapValue = await STQCH_LiquidityProvidingContract.value.getAmountOfToken1(toWei(newFormattedValue));
+  } else if (state.fromTokenSymbol === 'ST' && state.toTokenSymbol === 'QCH') {
+    newTokenAmountToSwapValue = await STQCH_LiquidityProvidingContract.value.getAmountOfToken2(toWei(newFormattedValue));
+  } else {
+    newTokenAmountToSwapValue = newFormattedValue;
+    return newTokenAmountToSwapValue;
+  }
+  return fromWei(newTokenAmountToSwapValue);
+};
+
+const onFirstInputUpdated = async (event) => {
+  const newValue = event.target.value;
+  state.fromError = '';
+  const newFormattedValue = newValue.replaceAll(',', '.').replaceAll(/[^\d|.]*/gm, '');
+  if (newValue === '0' || newValue === '' || !newFormattedValue) {
+    state.toAmountInput = newFormattedValue;
+    return;
+  }
+  state.toAmountInput = await getAmountToSwap(newFormattedValue);
+};
+
+const onSecondInputUpdated = async (event) => {
+  const newValue = event.target.value;
+  state.toError = '';
+  const newFormattedValue = newValue.replaceAll(',', '.').replaceAll(/[^\d|.]*/gm, '');
+  if (newValue === '0' || newValue === '' || !newFormattedValue) {
+    state.fromAmountInput = newFormattedValue;
+    return;
+  }
+  state.fromAmountInput = await getAmountToSwap(newFormattedValue);
+};
 
 const getFromTokenBalance = async (selectedToken) => {
   await fetchBalance();
   tokensContracts.value.forEach((token) => {
     if (selectedToken === token.name) {
       const tokenBalance = computed(() => Number(fromWei(token.balance)));
-      state.fromTokenBalance = [tokenBalance.value, token.name];
+      state.fromTokenBalance = tokenBalance.value;
+      state.fromTokenSymbol = token.name;
     }
   });
 };
@@ -109,12 +172,14 @@ const getToTokenBalance = async (selectedToken) => {
   tokensContracts.value.forEach((token) => {
     if (selectedToken === token.name) {
       const tokenBalance = computed(() => Number(fromWei(token.balance)));
-      state.toTokenBalance = [tokenBalance.value, token.name];
+      state.toTokenBalance = tokenBalance.value;
+      state.toTokenSymbol = token.name;
     }
   });
 };
 
 const selectFromToken = async (selectedToken) => {
+  state.fromError = '';
   await getFromTokenBalance(selectedToken);
   tokensContracts.value.forEach((token) => {
     if (selectedToken === token.name) {
@@ -124,6 +189,7 @@ const selectFromToken = async (selectedToken) => {
 };
 
 const selectToToken = async (selectedToken) => {
+  state.fromError = '';
   await getToTokenBalance(selectedToken);
   tokensContracts.value.forEach((token) => {
     if (selectedToken === token.name) {
@@ -148,20 +214,30 @@ const getSwapMethod = () => {
   return { method, contract };
 };
 
-const fetchData = async () => {};
-
 const swap = async () => {
   state.error = '';
   state.swapIsLoading = true;
   const { method, contract } = getSwapMethod();
-  let tx = await state.fromToken.contract.approve(contract.address, toWei(state.fromAmountInput));
-  await tx.wait();
 
-  tx = await method(toWei(state.fromAmountInput));
-  await tx.wait();
+  try {
+    if (state.fromAmountInput === '0' || !enoughBalance.value) {
+      throw new RangeError();
+    }
+    let tx = await state.fromToken.contract.approve(contract.address, toWei(state.fromAmountInput));
+    await tx.wait();
+
+    tx = await method(toWei(state.fromAmountInput));
+    await tx.wait();
+    state.fromAmountInput = '';
+    state.toAmountInput = '';
+  } catch (err) {
+    if (err.code === 'INVALID_ARGUMENT' || err.name === 'RangeError') {
+      state.fromError = 'Please enter a valid amount';
+    } else {
+      state.fromError = 'An error occurred, try again';
+    }
+  }
   await updateSelectedTokensBalances();
   state.swapIsLoading = false;
-  state.fromAmountInput = '';
-  state.toAmountInput = '';
 };
 </script>
