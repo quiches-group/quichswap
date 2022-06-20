@@ -27,7 +27,7 @@
 import { reactive } from 'vue';
 import { toWei } from '../utils/ethers';
 
-const emit = defineEmits(['transationStarted', 'transationEnded']);
+const emit = defineEmits(['transationStarted', 'transationEnded', 'transationFailed']);
 
 const props = defineProps({
   lpTokenUnit: {
@@ -66,13 +66,18 @@ const state = reactive({
 });
 
 async function removeLiquidity() {
-  state.isRemovingLiquidity = true;
-  emit('transationStarted');
+  try {
+    state.isRemovingLiquidity = true;
+    emit('transationStarted');
 
-  const lpTransation = await props.lpContract.removeLiquidity(toWei(state.lpTokenToRemove));
-  await lpTransation.wait();
+    const lpTransation = await props.lpContract.removeLiquidity(toWei(state.lpTokenToRemove));
+    await lpTransation.wait();
 
-  emit('transationEnded');
-  state.isRemovingLiquidity = false;
+    emit('transationEnded');
+    state.isRemovingLiquidity = false;
+  } catch (error) {
+    state.isRemovingLiquidity = false;
+    emit('transationFailed');
+  }
 }
 </script>
