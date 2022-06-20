@@ -35,7 +35,9 @@
             <q-format-number class="inline-block" :value="walletStackedTokens" :max-fraction-digits="3" :min-fraction-digits="3" locale="en-US" />
             <span class="text-white" v-text="` ${poolConfiguration.name}`" />
           </div>
-          <p class="text-gray-500">≃ <q-format-number class="inline-block" :value="tokenPrice(poolConfiguration.name) * walletStackedTokens" currency="usd" /></p>
+          <p class="text-gray-500" :class="{ 'opacity-0': poolConfiguration.hidePrice }">
+            ≃ <q-format-number class="inline-block" :value="tokenPrice(poolConfiguration.name) * walletStackedTokens" currency="usd" :max-fraction-digits="3" :min-fraction-digits="3" locale="en-US" />
+          </p>
         </div>
 
         <div class="mr-auto">
@@ -44,7 +46,9 @@
             <q-format-number class="inline-block" :value="walletRewardAmount" :max-fraction-digits="3" :min-fraction-digits="3" locale="en-US" />
             <span class="text-white" v-text="` QCH`" />
           </div>
-          <p class="text-gray-500">≃ <q-format-number class="inline-block" :value="tokenPrice('QCH') * walletRewardAmount" currency="usd" /></p>
+          <p class="text-gray-500" :class="{ 'opacity-0': poolConfiguration.hidePrice }">
+            ≃ <q-format-number class="inline-block" :value="tokenPrice('QCH') * walletRewardAmount" currency="usd" :max-fraction-digits="3" :min-fraction-digits="3" locale="en-US" />
+          </p>
         </div>
 
         <q-button :loading="state.claimIsLoading" @click="claimRewards">Claim</q-button>

@@ -13,14 +13,18 @@
         <li class="flex">
           <div class="flex-1">
             <p>{{ token.symbol }}</p>
-            <p v-if="!token.hidePrice" class="text-gray-500">≃ <q-format-number class="inline-block" :value="tokenPrice(token.symbol)" currency="usd" /></p>
+            <p v-if="!token.hidePrice" class="text-gray-500">
+              ≃ <q-format-number class="inline-block" :value="tokenPrice(token.symbol)" currency="usd" :max-fraction-digits="3" :min-fraction-digits="3" locale="en-US" />
+            </p>
           </div>
           <div class="text-right">
             <div>
               <q-format-number class="inline-block" :value="token.balance" :max-fraction-digits="3" :min-fraction-digits="3" locale="en-US" />
               <span class="text-white" v-text="` ${token.symbol}`" />
             </div>
-            <p v-if="!token.hidePrice" class="text-gray-500">≃ <q-format-number class="inline-block" :value="tokenPrice(token.symbol) * token.balance" currency="usd" /></p>
+            <p v-if="!token.hidePrice" class="text-gray-500">
+              ≃ <q-format-number class="inline-block" :value="tokenPrice(token.symbol) * token.balance" currency="usd" :max-fraction-digits="3" :min-fraction-digits="3" locale="en-US" />
+            </p>
           </div>
         </li>
       </ul>

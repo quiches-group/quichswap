@@ -61,6 +61,7 @@ const stackingPools = computed(() => [
     name: 'STQCH-LP',
     stackingContract: STQCHLP_StackingContract.value,
     stackedTokenContract: STQCH_LPTokenContract.value,
+    hidePrice: true,
   },
 ]);
 
