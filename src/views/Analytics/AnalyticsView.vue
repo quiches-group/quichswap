@@ -65,10 +65,12 @@ export default {
     ...mapState(useAnalyticsStore, ['liquidityData', 'volumeData', 'tokens', 'tokenPools']),
   },
   beforeMount() {
-    this.fetch();
+    this.fetchLiquidity();
   },
   methods: {
-    ...mapActions(useAnalyticsStore, ['fetch']),
+    ...mapActions(useAnalyticsStore, {
+      fetchLiquidity: 'fetchLiquidity',
+    }),
   },
 };
 </script>
