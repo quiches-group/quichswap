@@ -3,10 +3,9 @@
   <wallet-details-modal :is-open="state.walletDetailModalIsOpen" @modal-state-change="state.walletDetailModalIsOpen = $event" />
   <router-view class="mt-10" />
 
-  <q-snackbar :is-open="isWrongNetwork" size="medium" position="bottom" color="rgb(220 38 38)" class="border-2 border-red-900 flex flex-row">
-    <p class="mr-0.5">You are not connected to the right network,</p>
-
-    <button class="underline" @click="switchNetwork">please switch network</button>
+  <q-snackbar v-model="isWrongNetwork" color="error">
+    <p class="inline mr-0.5">You are not connected to the right network,</p>
+    <button class="inline underline" @click="switchNetwork">please switch network</button>
   </q-snackbar>
 </template>
 

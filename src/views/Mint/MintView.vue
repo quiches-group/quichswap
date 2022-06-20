@@ -1,5 +1,5 @@
 <template>
-  <div class="p-5 flex flex-col items-center">
+  <div class="flex flex-col items-center p-5">
     <q-card class="flex flex-col gap-5 p-10 bg-[#2b2d2e] outline-1">
       <div class="flex flex-row">
         <div class="flex-none">Your balance:</div>
@@ -17,7 +17,7 @@
       </connect-button>
     </q-card>
   </div>
-  <q-snackbar :is-open="state.showSuccessSnackBar" size="medium" position="bottom" color="#40b883" class="border-0 flex flex-row">
+  <q-snackbar v-model="state.showSuccessSnackBar">
     <p class="mr-0.5">
       You have successfully minted <b>{{ state.mintedValue }} ST</b> to your wallet!
     </p>
