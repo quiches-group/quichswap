@@ -18,8 +18,8 @@ const router = createRouter({
       component: () => import('../views/Stack/StackView.vue'),
     },
     {
-      path: '/liquidity-providing',
-      name: 'LiquidityProviding',
+      path: '/liquidity',
+      name: 'Liquidity',
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
@@ -58,14 +58,6 @@ const router = createRouter({
       name: 'Token',
       component: () => import('../views/Analytics/TokenView.vue'),
     },
-	{
-	  path: '/liquidity',
-      name: 'Liquidity',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import('../views/Liquidity/LiquidityView.vue'),
-	}
   ],
 });
 
