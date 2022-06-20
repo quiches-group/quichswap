@@ -4,7 +4,7 @@
     <p class="text-lg font-light text-center text-gray-200">Trade tokens in an instant</p>
     <q-card class="flex flex-col gap-3 p-10 bg-tertiary mt-5">
       <div class="text-gray-500 text-base">Swap from:</div>
-      <div class="flex flex-1 items-center p-2 rounded-lg" :style="{ backgroundColor: '#242526' }">
+      <div class="flex flex-1 items-center p-2 rounded-lg bg-tertiary">
         <q-input
           v-model="state.fromAmountInput"
           :disabled="state.swapIsLoading"
@@ -199,9 +199,9 @@ const getFromTokenBalance = async (selectedToken) => {
   await fetchBalance();
   tokensContracts.value.forEach((token) => {
     if (selectedToken === token.name) {
-      const tokenBalance = computed(() => Number(fromWei(token.balance)));
-      state.fromTokenBalance = tokenBalance.value;
-      state.fromTokenSymbol = token.name;
+    const tokenBalance = computed(() => Number(fromWei(token.balance)));
+    state.fromTokenBalance = tokenBalance.value;
+    state.fromTokenSymbol = token.name;
     }
   });
 };
@@ -210,9 +210,9 @@ const getToTokenBalance = async (selectedToken) => {
   await fetchBalance();
   tokensContracts.value.forEach((token) => {
     if (selectedToken === token.name) {
-      const tokenBalance = computed(() => Number(fromWei(token.balance)));
-      state.toTokenBalance = tokenBalance.value;
-      state.toTokenSymbol = token.name;
+    const tokenBalance = computed(() => Number(fromWei(token.balance)));
+    state.toTokenBalance = tokenBalance.value;
+    state.toTokenSymbol = token.name;
     }
   });
 };
