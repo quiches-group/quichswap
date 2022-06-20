@@ -107,10 +107,14 @@ const state = reactive({
   isAddingLiquidity: false,
 });
 
+function formatValues(value) {
+  return Number.parseFloat(value).toFixed(3).toString();
+}
+
 async function onFirstInputUpdated(event) {
   const newValue = event.target.value;
 
-  const newFormattedValue = newValue.replaceAll(',', '.').replaceAll(/[^\d|.]*/gm, '');
+  const newFormattedValue = formatValues(newValue.replaceAll(',', '.').replaceAll(/[^\d|.]*/gm, ''));
 
   if (newValue === '0' || newValue === '' || !newFormattedValue) {
     state.amountOfTokenTwoToStack = newFormattedValue;
@@ -118,13 +122,13 @@ async function onFirstInputUpdated(event) {
   }
 
   const newTokenTwoAmountToStackValue = await props.lpContract.getAmountOfToken1(toWei(newFormattedValue));
-  state.amountOfTokenTwoToStack = fromWei(newTokenTwoAmountToStackValue);
+  state.amountOfTokenTwoToStack = formatValues(fromWei(newTokenTwoAmountToStackValue));
 }
 
 async function onSecondInputUpdated(event) {
   const newValue = event.target.value;
 
-  const newFormattedValue = newValue.replaceAll(',', '.').replaceAll(/[^\d|.]*/gm, '');
+  const newFormattedValue = formatValues(newValue.replaceAll(',', '.').replaceAll(/[^\d|.]*/gm, ''));
 
   if (newValue === '0' || newValue === '' || !newFormattedValue) {
     state.amountOfTokenOneToStack = newFormattedValue;
@@ -132,7 +136,7 @@ async function onSecondInputUpdated(event) {
   }
 
   const newTokenOneAmountToStackValue = await props.lpContract.getAmountOfToken2(toWei(newFormattedValue));
-  state.amountOfTokenOneToStack = fromWei(newTokenOneAmountToStackValue);
+  state.amountOfTokenOneToStack = formatValues(fromWei(newTokenOneAmountToStackValue));
 }
 
 async function addLiquidity() {
