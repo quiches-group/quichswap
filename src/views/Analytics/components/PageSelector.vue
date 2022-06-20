@@ -41,8 +41,6 @@ export default {
 }
 
 .tab-active {
-  @apply rounded-full text-white;
-
-  background-color: rgb(64, 184, 131);
+  @apply rounded-full text-white bg-primary;
 }
 </style>

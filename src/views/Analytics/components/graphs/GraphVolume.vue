@@ -66,16 +66,16 @@ export default {
             name: this.unit,
             data: this.data,
             type: 'bar',
-            color: 'rgba(64, 184, 131, 1)',
+            color: 'rgba(244, 0, 135, 1)',
             itemStyle: {
               color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
                 {
                   offset: 0,
-                  color: 'rgba(64, 184, 131, 1)',
+                  color: 'rgba(244, 0, 135, 1)',
                 },
                 {
                   offset: 1,
-                  color: 'rgba(64, 184, 131, 0.4)',
+                  color: 'rgba(244, 0, 135, 0)',
                 },
               ]),
             },

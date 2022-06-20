@@ -76,13 +76,13 @@ export default {
             stack: 'Total',
             smooth: true,
             symbol: 'none',
-            color: 'rgba(64, 184, 131, 1)',
+            color: 'rgba(244, 0, 135, 1)',
             emphasis: {
               focus: 'series',
             },
             data: this.data,
             lineStyle: {
-              color: 'rgba(64, 184, 131, 0.8)',
+              color: 'rgba(244, 0, 135, 0.8)',
               width: 3,
             },
             areaStyle: {
@@ -90,11 +90,11 @@ export default {
               color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
                 {
                   offset: 0,
-                  color: 'rgba(64, 184, 131, 0.8)',
+                  color: 'rgba(244, 0, 135, 0.8)',
                 },
                 {
                   offset: 1,
-                  color: 'rgba(64, 184, 131, 0.1)',
+                  color: 'rgba(244, 0, 135, 0.1)',
                 },
               ]),
             },

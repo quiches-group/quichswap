@@ -40,14 +40,14 @@
       />
     </div>
     <q-snackbar v-model="state.isActiveTx" color="alert">
-      <p class="mr-0.5">Waiting transations ends. Please follow your wallet instructions.</p>
+      <p class="mr-0.5">Waiting transactions ends. Please follow your wallet instructions.</p>
     </q-snackbar>
 
     <q-snackbar v-model="state.isTxEnded" dissmissable>
-      <p class="mr-0.5">Transations ends successfully. Your liquidity has updated</p>
+      <p class="mr-0.5">Transactions ends successfully. Your liquidity has updated</p>
     </q-snackbar>
     <q-snackbar v-model="state.isTxCanceled" color="error" dissmissable>
-      <p class="mr-0.5">Transations ends with error. It may canceled</p>
+      <p class="mr-0.5">Transactions ends with error. It may have been canceled</p>
     </q-snackbar>
   </div>
 </template>
