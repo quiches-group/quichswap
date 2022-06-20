@@ -159,8 +159,14 @@ const formattedAmount = async () => {
   state.formattedAmount = await getAmountToSwap('1');
 };
 
-const onFirstInputUpdated = async (event) => {
-  const newValue = event.target.value;
+const onFirstInputUpdated = async (event = null, value = 0) => {
+  let newValue;
+  if (value !== 0) {
+    newValue = value;
+  }
+  if (event !== null) {
+    newValue = event.target.value;
+  }
   state.fromError = '';
   const newFormattedValue = newValue.replaceAll(',', '.').replaceAll(/[^\d|.]*/gm, '');
   if (newValue === '0' || newValue === '' || !newFormattedValue) {
@@ -171,8 +177,14 @@ const onFirstInputUpdated = async (event) => {
   state.toAmountInput = await getAmountToSwap(newFormattedValue);
 };
 
-const onSecondInputUpdated = async (event) => {
-  const newValue = event.target.value;
+const onSecondInputUpdated = async (event = null, value = 0) => {
+  let newValue;
+  if (value !== 0) {
+    newValue = value;
+  }
+  if (event !== null) {
+    newValue = event.target.value;
+  }
   state.toError = '';
   const newFormattedValue = newValue.replaceAll(',', '.').replaceAll(/[^\d|.]*/gm, '');
   if (newValue === '0' || newValue === '' || !newFormattedValue) {
@@ -213,6 +225,7 @@ const selectFromToken = async (selectedToken) => {
       state.fromToken = token;
     }
   });
+  await onFirstInputUpdated(null, state.fromAmountInput);
   await formattedAmount();
 };
 
@@ -224,6 +237,7 @@ const selectToToken = async (selectedToken) => {
       state.toToken = token;
     }
   });
+  await onSecondInputUpdated(null, state.toAmountInput);
   await formattedAmount();
 };
 
