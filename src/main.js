@@ -12,8 +12,7 @@ import router from './router';
 
 const app = createApp(App);
 
-// TODO find a way to have this in env file
-axios.defaults.baseURL = 'http://localhost:3333';
+axios.defaults.baseURL = import.meta.env.VITE_BASE_URL || 'http://localhost:3333';
 
 app.use(createPinia());
 app.use(router);

@@ -58,7 +58,7 @@ export const useAnalyticsStore = defineStore('analytics', {
     },
   },
   actions: {
-    async fetch() {
+    async fetchLiquidity() {
       if (this.liquidityData.length) return;
 
       const date = moment().subtract(1, 'day');
