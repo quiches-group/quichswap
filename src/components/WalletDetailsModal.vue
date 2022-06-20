@@ -13,14 +13,14 @@
         <li class="flex">
           <div class="flex-1">
             <p>{{ token.symbol }}</p>
-            <p class="text-gray-500">≃ 12000$</p>
+            <p v-if="!token.hidePrice" class="text-gray-500">≃ <q-format-number class="inline-block" :value="tokenPrice(token.symbol)" currency="usd" /></p>
           </div>
           <div class="text-right">
             <div>
               <q-format-number class="inline-block" :value="token.balance" :max-fraction-digits="3" :min-fraction-digits="3" locale="en-US" />
               <span class="text-white" v-text="` ${token.symbol}`" />
             </div>
-            <p class="text-gray-500">≃ 12000$</p>
+            <p v-if="!token.hidePrice" class="text-gray-500">≃ <q-format-number class="inline-block" :value="tokenPrice(token.symbol) * token.balance" currency="usd" /></p>
           </div>
         </li>
       </ul>
@@ -33,8 +33,10 @@ import { storeToRefs } from 'pinia';
 import { computed } from 'vue';
 import { useWalletStore } from '../stores/wallet.store';
 import { fromWei } from '../utils/ethers';
+import { usePriceStore } from '../stores/prices.store';
 
 const { wallet, qchBalance, stBalance, stqchlpBalance } = storeToRefs(useWalletStore());
+const { token: tokenPrice } = storeToRefs(usePriceStore());
 const emit = defineEmits(['modalStateChange']);
 
 const tokens = computed(() => [
@@ -49,6 +51,7 @@ const tokens = computed(() => [
   {
     symbol: 'STQCH-LP',
     balance: Number(fromWei(stqchlpBalance.value)),
+    hidePrice: true,
   },
 ]);
 

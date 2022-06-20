@@ -10,7 +10,15 @@
             <q-format-number class="inline-block" :value="totalStackedTokens" :max-fraction-digits="3" :min-fraction-digits="3" locale="en-US" />
             <span class="text-white" v-text="` ${poolConfiguration.name}`" />
           </div>
-          <q-format-number class="text-gray-500" :value="138000000" :max-fraction-digits="3" :min-fraction-digits="3" locale="en-US" />
+          <q-format-number
+            class="text-gray-500"
+            :class="{ 'opacity-0': !tokenPrice(poolConfiguration.name) }"
+            :value="tokenPrice(poolConfiguration.name) * totalStackedTokens"
+            :max-fraction-digits="3"
+            :min-fraction-digits="3"
+            locale="en-US"
+            currency="usd"
+          />
         </div>
 
         <connect-button>
@@ -27,7 +35,7 @@
             <q-format-number class="inline-block" :value="walletStackedTokens" :max-fraction-digits="3" :min-fraction-digits="3" locale="en-US" />
             <span class="text-white" v-text="` ${poolConfiguration.name}`" />
           </div>
-          <p class="text-gray-500">≃ 12000$</p>
+          <p class="text-gray-500">≃ <q-format-number class="inline-block" :value="tokenPrice(poolConfiguration.name) * walletStackedTokens" currency="usd" /></p>
         </div>
 
         <div class="mr-auto">
@@ -36,7 +44,7 @@
             <q-format-number class="inline-block" :value="walletRewardAmount" :max-fraction-digits="3" :min-fraction-digits="3" locale="en-US" />
             <span class="text-white" v-text="` QCH`" />
           </div>
-          <p class="text-gray-500">≃ 12000$</p>
+          <p class="text-gray-500">≃ <q-format-number class="inline-block" :value="tokenPrice('QCH') * walletRewardAmount" currency="usd" /></p>
         </div>
 
         <q-button :loading="state.claimIsLoading" @click="claimRewards">Claim</q-button>
@@ -56,9 +64,11 @@ import { storeToRefs } from 'pinia';
 import ConnectButton from '../../components/ConnectButton.vue';
 import { fromWei, toWei } from '../../utils/ethers';
 import { useWalletStore } from '../../stores/wallet.store';
+import { usePriceStore } from '../../stores/prices.store';
 
 const { fetchBalance } = useWalletStore();
 const { wallet, walletIsConnected, provider, isWrongNetwork, networkId } = storeToRefs(useWalletStore());
+const { token: tokenPrice } = storeToRefs(usePriceStore());
 
 const emit = defineEmits(['setupModal']);
 

@@ -1,3 +1,4 @@
+\
 <template>
   <div class="container mx-auto px-4">
     <q-row class="m-0">
@@ -12,8 +13,12 @@
         <q-card class="p-6 w-full bg-neutral-800 border-neutral-700 border">
           <span class="text-sm">Price</span>
           <div class="mb-4 text-xl">
-            <span>{{ token.price }}</span>
-            <span class="ml-4 px-1.5 py-0.5 text-sm rounded-lg" :class="[token.priceChange > 0 ? 'bg-green-500/30 text-green-400' : 'bg-red-500/30 text-red-400']"> {{ token.priceChange }}%</span>
+            <span>
+              <q-format-number class="inline-block" :value="tokenPrice(token.name)" currency="usd" />
+            </span>
+            <span class="ml-4 px-1.5 py-0.5 text-sm rounded-lg" :class="[tokenPriceChange(token.name) > 0 ? 'bg-green-500/30 text-green-400' : 'bg-red-500/30 text-red-400']">
+              <q-format-number class="inline-block" :value="tokenPriceChange(token.name)" />%
+            </span>
           </div>
           <span class="text-sm">Liquidity</span>
           <div class="mb-4 text-xl">{{ token.liquidity }}</div>
@@ -60,6 +65,7 @@ import TablePools from './components/tables/TablePools.vue';
 import GraphCard from './components/graphs/GraphCard.vue';
 import GraphVolume from './components/graphs/GraphVolume.vue';
 import GraphLiquidity from './components/graphs/GraphLiquidity.vue';
+import { usePriceStore } from '../../stores/prices.store';
 
 export default {
   name: 'TokenView',
@@ -91,6 +97,10 @@ export default {
     ...mapState(useAnalyticsStore, {
       getToken: (state) => state.token,
       filterPools: (state) => state.filterPools,
+    }),
+    ...mapState(usePriceStore, {
+      tokenPrice: 'token',
+      tokenPriceChange: 'tokenPriceChange',
     }),
     token() {
       return this.getToken(this.$route.params.token);

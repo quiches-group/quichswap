@@ -14,12 +14,16 @@
       <tr v-for="(token, index) in tokens" :key="index" class="line hover:bg-gray-50/10 cursor-pointer" @click="$emit('click:token', token)">
         <td class="line-right">{{ index + 1 }}</td>
         <td class="line-left">
-          <icons-token :token="token.name" />
+          <icons-token class="w-10 h-10" :token="token.name" />
           <span>{{ token.name }}</span>
         </td>
-        <td class="line-right">{{ token.price }}</td>
         <td class="line-right">
-          <span class="px-1.5 py-0.5 rounded-lg" :class="[token.priceChange > 0 ? 'bg-green-500/30 text-green-400' : 'bg-red-500/30 text-red-400']"> {{ token.priceChange }}%</span>
+          <q-format-number class="inline-block" :value="tokenPrice(token.name)" currency="usd" />
+        </td>
+        <td class="line-right">
+          <span class="px-1.5 py-0.5 rounded-lg" :class="[tokenPriceChange(token.name) > 0 ? 'bg-green-500/30 text-green-400' : 'bg-red-500/30 text-red-400']">
+            <q-format-number class="inline-block" :value="tokenPriceChange(token.name)" />%
+          </span>
         </td>
         <td class="p-2 text-right">{{ token.volume }}</td>
         <td class="line-right">{{ token.liquidity }}</td>
@@ -29,7 +33,9 @@
 </template>
 
 <script>
+import { mapState } from 'pinia';
 import IconsToken from '../icons/IconsToken.vue';
+import { usePriceStore } from '../../../../stores/prices.store';
 
 export default {
   name: 'TableTokens',
@@ -39,6 +45,12 @@ export default {
       type: Array,
       required: true,
     },
+  },
+  computed: {
+    ...mapState(usePriceStore, {
+      tokenPrice: 'token',
+      tokenPriceChange: 'tokenPriceChange',
+    }),
   },
   emits: ['click:token'],
 };
