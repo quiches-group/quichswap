@@ -14,7 +14,7 @@
       <tr v-for="(token, index) in tokens" :key="index" class="line hover:bg-gray-50/10 cursor-pointer" @click="$emit('click:token', token)">
         <td class="line-right">{{ index + 1 }}</td>
         <td class="line-left">
-          <icons-token :token="token.name" />
+          <icons-token class="w-10 h-10" :token="token.name" />
           <span>{{ token.name }}</span>
         </td>
         <td class="line-right">
@@ -22,7 +22,7 @@
         </td>
         <td class="line-right">
           <span class="px-1.5 py-0.5 rounded-lg" :class="[tokenPriceChange(token.name) > 0 ? 'bg-green-500/30 text-green-400' : 'bg-red-500/30 text-red-400']">
-            <q-format-number class="inline-block" :value="tokenPriceChange(token.name) * 100" currency="usd" />%
+            <q-format-number class="inline-block" :value="tokenPriceChange(token.name)" />%
           </span>
         </td>
         <td class="p-2 text-right">{{ token.volume }}</td>

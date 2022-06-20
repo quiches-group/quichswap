@@ -17,7 +17,7 @@
               <q-format-number class="inline-block" :value="tokenPrice(token.name)" currency="usd" />
             </span>
             <span class="ml-4 px-1.5 py-0.5 text-sm rounded-lg" :class="[tokenPriceChange(token.name) > 0 ? 'bg-green-500/30 text-green-400' : 'bg-red-500/30 text-red-400']">
-              <q-format-number class="inline-block" :value="tokenPriceChange(token.name) * 100" currency="usd" />%
+              <q-format-number class="inline-block" :value="tokenPriceChange(token.name)" />%
             </span>
           </div>
           <span class="text-sm">Liquidity</span>

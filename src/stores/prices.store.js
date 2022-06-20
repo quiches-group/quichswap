@@ -19,7 +19,7 @@ export const usePriceStore = defineStore('price', {
       return state.tokens[name];
     },
     tokenPriceChange: (state) => (name) => {
-      return state.tokens[name] / state.tokens24h[name];
+      return ((state.tokens[name] - state.tokens24h[name]) / state.tokens24h[name]) * 100;
     },
   },
   actions: {
