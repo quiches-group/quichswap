@@ -53,13 +53,13 @@
 import * as moment from 'moment';
 import { mapState } from 'pinia';
 import { useAnalyticsStore } from '../../stores/analytics.store';
-import TableTokens from './compoments/tables/TableTokens.vue';
-import PageSelector from './compoments/PageSelector.vue';
-import IconsToken from './compoments/icons/IconsToken.vue';
-import TablePools from './compoments/tables/TablePools.vue';
-import GraphCard from './compoments/graphs/GraphCard.vue';
-import GraphVolume from './compoments/graphs/GraphVolume.vue';
-import GraphLiquidity from './compoments/graphs/GraphLiquidity.vue';
+import TableTokens from './components/tables/TableTokens.vue';
+import PageSelector from './components/PageSelector.vue';
+import IconsToken from './components/icons/IconsToken.vue';
+import TablePools from './components/tables/TablePools.vue';
+import GraphCard from './components/graphs/GraphCard.vue';
+import GraphVolume from './components/graphs/GraphVolume.vue';
+import GraphLiquidity from './components/graphs/GraphLiquidity.vue';
 
 export default {
   name: 'TokenView',
