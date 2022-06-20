@@ -21,12 +21,12 @@
       </div>
       <div class="text-gray-500">Swap to:</div>
       <div class="flex flex-1 items-center p-2 rounded-lg" :style="{ backgroundColor: '#242526' }">
-        <q-input v-model="state.toAmountInput" :disabled="state.swapIsLoading" :error="state.toError" background-color="#242526" placeholder="Your amount" class="w-full"></q-input>
+        <q-input v-model="state.toAmountInput" :disabled="state.swapIsLoading" :error="state.toError" background-color="#242526" placeholder="Amount" class="w-full"></q-input>
         <div class="bg-clip-padding rounded-lg bg-gray-100 flex-none">
           <q-dropdown bg-color="#242526" text-color="white" placeholder="Token" :options="tokens" accent-color="darkGray" @select="selectToToken"></q-dropdown>
         </div>
       </div>
-      <div class="flex flex-row text-xs">
+      <div class="flex flex-row text-xs mb-5">
         <span class="flex-1" />
         <div class="mr-2 text-gray-500">Balance:</div>
         <div class="flex-none">
@@ -87,7 +87,7 @@ const state = reactive({
 });
 
 const emptyInput = computed(() => {
-  return state.fromAmountInput !== '' && state.toAmountInput !== '' && state.fromToken !== null && state.toToken !== null;
+  return state.fromAmountInput !== '' && state.fromToken !== null && state.toToken !== null;
 });
 
 const checkBalance = computed(() => {
@@ -132,28 +132,36 @@ const selectToToken = async (selectedToken) => {
   });
 };
 
+const updateSelectedTokensBalances = async () => {
+  await getToTokenBalance(state.toToken.name);
+  await getFromTokenBalance(state.fromToken.name);
+};
+
 const getSwapMethod = () => {
   let contract;
   let method;
 
   if (['QCH', 'ST'].includes(state.fromToken.name) && ['QCH', 'ST'].includes(state.toToken.name)) {
     contract = STQCH_LiquidityProvidingContract.value;
-    console.log(contract.swapToken2);
-    console.log(contract.swapToken1);
     method = state.fromToken.name === 'ST' ? contract.swapToken1 : contract.swapToken2;
-    console.log('aaaaaaaah@', method);
   }
-  console.log('contract', contract);
-  console.log('method', method);
-  return method;
+  return { method, contract };
 };
+
+const fetchData = async () => {};
 
 const swap = async () => {
   state.error = '';
   state.swapIsLoading = true;
-  const method = getSwapMethod();
-  console.log(method);
-  const tx = await method(toWei(state.fromAmountInput));
+  const { method, contract } = getSwapMethod();
+  let tx = await state.fromToken.contract.approve(contract.address, toWei(state.fromAmountInput));
   await tx.wait();
+
+  tx = await method(toWei(state.fromAmountInput));
+  await tx.wait();
+  await updateSelectedTokensBalances();
+  state.swapIsLoading = false;
+  state.fromAmountInput = '';
+  state.toAmountInput = '';
 };
 </script>
