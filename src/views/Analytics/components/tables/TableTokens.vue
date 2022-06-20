@@ -2,7 +2,7 @@
   <table>
     <thead>
       <tr class="border-b border-neutral-700">
-        <th class="line-right w-10">#</th>
+        <th class="w-10 line-right">#</th>
         <th class="line-left">Token Name</th>
         <th class="line-right">Price</th>
         <th class="line-right">Price Change</th>
@@ -11,7 +11,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr v-for="(token, index) in tokens" :key="index" class="line hover:bg-gray-50/10 cursor-pointer" @click="$emit('click:token', token)">
+      <tr v-for="(token, index) in tokens" :key="index" class="cursor-pointer line hover:bg-gray-50/10" @click="$emit('click:token', token)">
         <td class="line-right">{{ index + 1 }}</td>
         <td class="line-left">
           <icons-token class="w-10 h-10" :token="token.name" />
@@ -46,13 +46,13 @@ export default {
       required: true,
     },
   },
+  emits: ['click:token'],
   computed: {
     ...mapState(usePriceStore, {
       tokenPrice: 'token',
       tokenPriceChange: 'tokenPriceChange',
     }),
   },
-  emits: ['click:token'],
 };
 </script>
 
