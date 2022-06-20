@@ -110,7 +110,7 @@ const mint = async () => {
     if (err.code === 'INVALID_ARGUMENT' || err.name === 'RangeError') {
       state.error = 'Please enter a valid amount';
     } else {
-      state.error = 'An error occurred, please try again';
+      state.error = 'An error occurred, try again';
     }
   }
   await fetchBalance();
