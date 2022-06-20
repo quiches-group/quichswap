@@ -57,7 +57,6 @@ import { useAnalyticsStore } from '../../stores/analytics.store';
 import TableTokens from './components/tables/TableTokens.vue';
 import PageSelector from './components/PageSelector.vue';
 import IconsToken from './components/icons/IconsToken.vue';
-import TablePools from './components/tables/TablePools.vue';
 import GraphCard from './components/graphs/GraphCard.vue';
 import GraphVolume from './components/graphs/GraphVolume.vue';
 import GraphLiquidity from './components/graphs/GraphLiquidity.vue';
@@ -65,7 +64,7 @@ import IconsPool from './components/icons/IconsPool.vue';
 
 export default {
   name: 'TokenView',
-  components: { IconsPool, GraphVolume, GraphLiquidity, GraphCard, TablePools, IconsToken, TableTokens, PageSelector },
+  components: { IconsPool, GraphVolume, GraphLiquidity, GraphCard, IconsToken, TableTokens, PageSelector },
   data() {
     return {
       selectedGraph: 'liquidity',
