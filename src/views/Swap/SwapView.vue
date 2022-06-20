@@ -2,7 +2,7 @@
   <div class="p-5 flex flex-col items-center">
     <h1 class="mt-10 text-4xl font-medium text-center">Swap</h1>
     <p class="text-lg font-light text-center text-gray-200">Trade tokens in an instant</p>
-    <q-card class="flex flex-col gap-3 p-10 bg-[#2b2d2e] mt-5">
+    <q-card class="flex flex-col gap-3 p-10 bg-tertiary mt-5">
       <div class="text-gray-500 text-base">Swap from:</div>
       <div class="flex flex-1 items-center p-2 rounded-lg" :style="{ backgroundColor: '#242526' }">
         <q-input

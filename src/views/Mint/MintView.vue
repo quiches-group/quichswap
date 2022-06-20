@@ -1,6 +1,6 @@
 <template>
   <div class="flex justify-center items-center p-5 h-screen">
-    <q-card class="flex flex-col gap-5 p-10 bg-[#2b2d2e] outline-1">
+    <q-card class="flex flex-col gap-5 p-10 bg-tertiary outline-1">
       <div class="flex flex-row flex-none items-start">
         <div class="flex-none">Your balance:</div>
         <span class="flex-1" />
