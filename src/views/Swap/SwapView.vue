@@ -160,13 +160,7 @@ const formattedAmount = async () => {
 };
 
 const onFirstInputUpdated = async (event = null, value = 0) => {
-  let newValue;
-  if (value !== 0) {
-    newValue = value;
-  }
-  if (event !== null) {
-    newValue = event.target.value;
-  }
+  const newValue = event ? event.target.value : value;
   state.fromError = '';
   const newFormattedValue = newValue.replaceAll(',', '.').replaceAll(/[^\d|.]*/gm, '');
   if (newValue === '0' || newValue === '' || !newFormattedValue) {
@@ -178,13 +172,7 @@ const onFirstInputUpdated = async (event = null, value = 0) => {
 };
 
 const onSecondInputUpdated = async (event = null, value = 0) => {
-  let newValue;
-  if (value !== 0) {
-    newValue = value;
-  }
-  if (event !== null) {
-    newValue = event.target.value;
-  }
+  const newValue = event ? event.target.value : value;
   state.toError = '';
   const newFormattedValue = newValue.replaceAll(',', '.').replaceAll(/[^\d|.]*/gm, '');
   if (newValue === '0' || newValue === '' || !newFormattedValue) {
@@ -198,22 +186,26 @@ const onSecondInputUpdated = async (event = null, value = 0) => {
 const getFromTokenBalance = async (selectedToken) => {
   await fetchBalance();
   tokensContracts.value.forEach((token) => {
-    if (selectedToken === token.name) {
+    if (selectedToken !== token.name) {
+      return;
+    }
+
     const tokenBalance = computed(() => Number(fromWei(token.balance)));
     state.fromTokenBalance = tokenBalance.value;
     state.fromTokenSymbol = token.name;
-    }
   });
 };
 
 const getToTokenBalance = async (selectedToken) => {
   await fetchBalance();
   tokensContracts.value.forEach((token) => {
-    if (selectedToken === token.name) {
+    if (selectedToken !== token.name) {
+      return;
+    }
+
     const tokenBalance = computed(() => Number(fromWei(token.balance)));
     state.toTokenBalance = tokenBalance.value;
     state.toTokenSymbol = token.name;
-    }
   });
 };
 
@@ -221,9 +213,11 @@ const selectFromToken = async (selectedToken) => {
   state.fromError = '';
   await getFromTokenBalance(selectedToken);
   tokensContracts.value.forEach((token) => {
-    if (selectedToken === token.name) {
-      state.fromToken = token;
+    if (selectedToken !== token.name) {
+      return;
     }
+
+    state.fromToken = token;
   });
   await onFirstInputUpdated(null, state.fromAmountInput);
   await formattedAmount();
@@ -233,9 +227,11 @@ const selectToToken = async (selectedToken) => {
   state.fromError = '';
   await getToTokenBalance(selectedToken);
   tokensContracts.value.forEach((token) => {
-    if (selectedToken === token.name) {
-      state.toToken = token;
+    if (selectedToken !== token.name) {
+      return;
     }
+
+    state.toToken = token;
   });
   await onSecondInputUpdated(null, state.toAmountInput);
   await formattedAmount();
@@ -247,13 +243,12 @@ const updateSelectedTokensBalances = async () => {
 };
 
 const getSwapMethod = () => {
-  let contract;
-  let method;
-
-  if (['QCH', 'ST'].includes(state.fromToken.name) && ['QCH', 'ST'].includes(state.toToken.name)) {
-    contract = STQCH_LiquidityProvidingContract.value;
-    method = state.fromToken.name === 'ST' ? contract.swapToken1 : contract.swapToken2;
+  if (!['QCH', 'ST'].includes(state.fromToken.name) && !['QCH', 'ST'].includes(state.toToken.name)) {
+    return { method: undefined, contract: undefined };
   }
+
+  const contract = STQCH_LiquidityProvidingContract.value;
+  const method = state.fromToken.name === 'ST' ? contract.swapToken1 : contract.swapToken2;
   return { method, contract };
 };
 
