@@ -41,12 +41,12 @@
 <script>
 import { mapActions, mapState } from 'pinia';
 import { useAnalyticsStore } from '../../stores/analytics.store';
-import GraphLiquidity from './compoments/graphs/GraphLiquidity.vue';
-import GraphVolume from './compoments/graphs/GraphVolume.vue';
-import GraphCard from './compoments/graphs/GraphCard.vue';
-import TableTokens from './compoments/tables/TableTokens.vue';
-import TablePools from './compoments/tables/TablePools.vue';
-import PageSelector from './compoments/PageSelector.vue';
+import GraphLiquidity from './components/graphs/GraphLiquidity.vue';
+import GraphVolume from './components/graphs/GraphVolume.vue';
+import GraphCard from './components/graphs/GraphCard.vue';
+import TableTokens from './components/tables/TableTokens.vue';
+import TablePools from './components/tables/TablePools.vue';
+import PageSelector from './components/PageSelector.vue';
 
 export default {
   name: 'AnalyticsView',

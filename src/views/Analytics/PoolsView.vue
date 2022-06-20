@@ -17,8 +17,8 @@
 <script>
 import { mapState } from 'pinia';
 import { useAnalyticsStore } from '../../stores/analytics.store';
-import PageSelector from './compoments/PageSelector.vue';
-import TablePools from './compoments/tables/TablePools.vue';
+import PageSelector from './components/PageSelector.vue';
+import TablePools from './components/tables/TablePools.vue';
 
 export default {
   name: 'PoolsView',

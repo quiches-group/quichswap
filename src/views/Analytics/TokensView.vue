@@ -17,8 +17,8 @@
 <script>
 import { mapState } from 'pinia';
 import { useAnalyticsStore } from '../../stores/analytics.store';
-import PageSelector from './compoments/PageSelector.vue';
-import TableTokens from './compoments/tables/TableTokens.vue';
+import PageSelector from './components/PageSelector.vue';
+import TableTokens from './components/tables/TableTokens.vue';
 
 export default {
   name: 'TokensView',
