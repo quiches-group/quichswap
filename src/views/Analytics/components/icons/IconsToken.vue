@@ -1,5 +1,5 @@
 <template>
-  <img :src="getTokenLogo(token)" alt="" class="mr-1 inline-block w-8 rounded-full border border-neutral-700" />
+  <img :src="getTokenLogo(token)" alt="" class="mr-1 inline-block rounded-full border border-neutral-700" />
 </template>
 
 <script>

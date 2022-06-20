@@ -17,8 +17,10 @@ import { ethereum, defaultProvider, switchNetwork } from './utils/ethereum';
 import { useWalletStore } from './stores/wallet.store';
 import AppMenu from './components/AppMenu.vue';
 import WalletDetailsModal from './components/WalletDetailsModal.vue';
+import { usePriceStore } from './stores/prices.store';
 
 const { setWallet, setNetworkId, fetchBalance } = useWalletStore();
+const { fetchTokenPrices, fetchTokenPrices24h } = usePriceStore();
 const { isWrongNetwork, provider, wallet } = storeToRefs(useWalletStore());
 
 const state = reactive({
@@ -31,6 +33,9 @@ const getNetwork = async () => {
 };
 
 onMounted(async () => {
+  fetchTokenPrices();
+  fetchTokenPrices24h();
+
   ethereum.on('accountsChanged', (accounts) => {
     setWallet(accounts[0]);
   });
