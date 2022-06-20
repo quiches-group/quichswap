@@ -12,7 +12,7 @@ import router from './router';
 
 const app = createApp(App);
 
-axios.defaults.baseURL = import.meta.env.VITE_BASE_URL || 'http://localhost:3333';
+axios.defaults.baseURL = import.meta.env.VITE_BASE_URL || 'https://api.swap.quiches.ovh/';
 
 app.use(createPinia());
 app.use(router);
