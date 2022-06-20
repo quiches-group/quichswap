@@ -1,5 +1,5 @@
 <template>
-  <q-button v-if="!walletIsConnected" @click="connectMetamask">Connect</q-button>
+  <q-button v-if="!walletIsConnected" color="#f40087" @click="connectMetamask">Connect</q-button>
   <slot v-else />
 </template>
 

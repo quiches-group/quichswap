@@ -4,7 +4,7 @@
     <p v-if="state.selectedTab == 'add-liquidity'" class="text-lg font-light text-center text-gray-200">Add liquidity to receive LP tokens</p>
     <p v-if="state.selectedTab == 'remove-liquidity'" class="text-lg font-light text-center text-gray-200">Burn LP tokens to cash out your stacked tokens</p>
     <div class="flex flex-col px-4 pt-2 pb-5 mx-auto mt-5 max-w-xs rounded-lg bg-tertiary">
-      <q-tabs :selected-index="state.selectedTab" @select-index="state.selectedTab = $event">
+      <q-tabs :selected-index="state.selectedTab" background-color="#f40087" text-color="#fff" @select-index="state.selectedTab = $event">
         <q-tab tab-index="add-liquidity" class="text-white bg-white bg-opacity-5">+ Add Liquidity</q-tab>
         <q-tab tab-index="remove-liquidity" class="text-white bg-white bg-opacity-5">- Remove Liquidity</q-tab>
       </q-tabs>

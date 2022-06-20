@@ -1,8 +1,8 @@
 <template>
   <q-expansion-panel class="stacking-pools__item" show-separator header-background-color="#2b2d2e" content-background-color="#242526" accent-color="white">
     <template #header>
-      <div class="flex items-start gap-5 p-3 items-center">
-        <p class="w-40 font-bold self-start">Stack {{ poolConfiguration.name }}</p>
+      <div class="flex gap-5 items-center p-3">
+        <p class="self-start w-40 font-bold">Stack {{ poolConfiguration.name }}</p>
 
         <div class="flex-1">
           <p class="text-gray-500">Total Stacked Tokens</p>
@@ -22,13 +22,13 @@
         </div>
 
         <connect-button>
-          <q-button :loading="state.stackIsLoading" @click="handleOpenStackTokens">Stack tokens</q-button>
+          <q-button color="#f40087" text-color="#fff" :loading="state.stackIsLoading" @click="handleOpenStackTokens">Stack tokens</q-button>
         </connect-button>
       </div>
     </template>
 
     <template #content>
-      <div v-if="state.walletStackedTokens != 0" class="flex gap-5 items-center justify-start p-3">
+      <div v-if="state.walletStackedTokens != 0" class="flex gap-5 justify-start items-center p-3">
         <div class="w-40">
           <p class="text-gray-500">My Stacked Tokens</p>
           <div>
@@ -55,7 +55,7 @@
         <q-button :loading="state.withdrawIsLoading" @click="handleOpenWithdrawTokens">Withdraw</q-button>
       </div>
 
-      <div v-else class="flex gap-5 items-center justify-start p-3">
+      <div v-else class="flex gap-5 justify-start items-center p-3">
         <p class="flex-1 text-center text-gray-500">Stake now to earn QCH.</p>
       </div>
     </template>
