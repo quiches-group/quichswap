@@ -37,11 +37,11 @@
         @transation-ended="(state.isActiveTx = true), (state.isTxEnded = true)"
       />
     </div>
-    <q-snackbar :is-open="state.isActiveTx" size="medium" position="bottom" color="#FFB883" class="flex flex-row border-2" style="border-color: #ffb883">
+    <q-snackbar v-model="state.isActiveTx" color="alert">
       <p class="mr-0.5">Waiting transations ends. Please follow your wallet instructions.</p>
     </q-snackbar>
 
-    <q-snackbar :is-open="state.isTxEnded" size="medium" position="bottom" color="#42B883" class="flex flex-row border-2 border-primary">
+    <q-snackbar v-model="state.isTxEnded" dissmissable>
       <p class="mr-0.5">Transations ends successfully. Your liquidity has updated</p>
     </q-snackbar>
   </div>
