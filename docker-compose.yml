@@ -7,8 +7,6 @@ services:
       context: ./
       dockerfile: Dockerfile
     restart: always
-    environment:
-      - VITE_BASE_URL=https://api.swap.quiches.ovh/
     networks:
       - reverse-proxy
     labels:
