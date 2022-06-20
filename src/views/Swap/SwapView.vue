@@ -82,9 +82,9 @@
     </q-card>
   </div>
 
-  <q-snackbar :model-value="state.showSuccessSnackBar" :dismissable="true" size="medium" position="bottom" color="info" class="border-0 flex flex-row">
+  <q-snackbar v-model="state.showSuccessSnackBar" :dismissable="true" size="medium" position="bottom" color="info" class="border-0 flex flex-row">
     <p class="mr-0.5">
-      You have successfully traded <b>{{ state.fromAmountInput }} {{ state.fromTokenSymbol }}</b> to <b>{{ state.toAmountInput }} {{ state.toTokenSymbol }}</b> on your wallet!
+      You have successfully traded <b>{{ state.tradedFromAmount }} {{ state.fromTokenSymbol }}</b> for <b>{{ state.tradedToAmount }} {{ state.toTokenSymbol }}</b> on your wallet!
     </p>
   </q-snackbar>
 </template>
@@ -130,6 +130,8 @@ const state = reactive({
   toTokenBalance: 0,
   toTokenSymbol: '',
   formattedAmount: '',
+  tradedFromAmount: 0,
+  tradedToAmount: 0,
 });
 
 const emptyInput = computed(() => {
@@ -252,9 +254,10 @@ const swap = async () => {
     }
     let tx = await state.fromToken.contract.approve(contract.address, toWei(state.fromAmountInput));
     await tx.wait();
-
     tx = await method(toWei(state.fromAmountInput));
     await tx.wait();
+    state.tradedFromAmount = state.fromAmountInput;
+    state.tradedToAmount = state.toAmountInput;
     state.fromAmountInput = '';
     state.toAmountInput = '';
     state.showSuccessSnackBar = true;
