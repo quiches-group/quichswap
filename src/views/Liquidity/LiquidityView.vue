@@ -56,8 +56,8 @@
 /* eslint-disable camelcase */
 import { storeToRefs } from 'pinia';
 import { computed, onMounted, reactive } from 'vue';
-import AddLiquidity from '../../components/AddLiquidity.vue';
-import RemoveLiquidity from '../../components/RemoveLiquidity.vue';
+import AddLiquidity from './components/AddLiquidity.vue';
+import RemoveLiquidity from './components/RemoveLiquidity.vue';
 import { useWalletStore } from '../../stores/wallet.store';
 import { fromWei, toWei } from '../../utils/ethers';
 

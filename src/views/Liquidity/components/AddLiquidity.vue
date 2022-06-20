@@ -50,7 +50,7 @@
 <script setup>
 /* eslint-disable camelcase */
 import { reactive } from 'vue';
-import { fromWei, toWei } from '../utils/ethers';
+import { fromWei, toWei } from '../../../utils/ethers';
 
 const emit = defineEmits(['transationStarted', 'transationEnded', 'transationFailed']);
 

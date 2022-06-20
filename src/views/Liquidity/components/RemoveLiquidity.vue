@@ -25,7 +25,7 @@
 
 <script setup>
 import { reactive } from 'vue';
-import { toWei } from '../utils/ethers';
+import { toWei } from '../../../utils/ethers';
 
 const emit = defineEmits(['transationStarted', 'transationEnded', 'transationFailed']);
 
