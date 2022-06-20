@@ -75,7 +75,7 @@ async function removeLiquidity() {
 
     emit('transationEnded');
     state.isRemovingLiquidity = false;
-  } catch (error) {
+  } catch {
     state.isRemovingLiquidity = false;
     emit('transationFailed');
   }

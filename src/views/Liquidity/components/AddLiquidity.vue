@@ -145,7 +145,7 @@ async function addLiquidity() {
     state.amountOfTokenOneToStack = '';
     state.amountOfTokenTwoToStack = '';
     emit('transationEnded');
-  } catch (error) {
+  } catch {
     state.isAddingLiquidity = false;
     emit('transationFailed');
   }
