@@ -41,7 +41,7 @@
     </q-card>
   </div>
 
-  <q-snackbar :is-open="state.showSuccessSnackBar" size="medium" position="bottom" color="#40b883" class="border-0 flex flex-row">
+  <q-snackbar :model-value="state.showSuccessSnackBar" size="medium" position="bottom" color="info" class="border-0 flex flex-row">
     <p class="mr-0.5"></p>
   </q-snackbar>
 </template>
