@@ -10,7 +10,15 @@
             <q-format-number class="inline-block" :value="totalStackedTokens" :max-fraction-digits="3" :min-fraction-digits="3" locale="en-US" />
             <span class="text-white" v-text="` ${poolConfiguration.name}`" />
           </div>
-          <q-format-number class="text-gray-500" :value="tokenPrice(poolConfiguration.name) * totalStackedTokens" :max-fraction-digits="3" :min-fraction-digits="3" locale="en-US" currency="usd" />
+          <q-format-number
+            class="text-gray-500"
+            :class="{ 'opacity-0': !tokenPrice(poolConfiguration.name) }"
+            :value="tokenPrice(poolConfiguration.name) * totalStackedTokens"
+            :max-fraction-digits="3"
+            :min-fraction-digits="3"
+            locale="en-US"
+            currency="usd"
+          />
         </div>
 
         <connect-button>
