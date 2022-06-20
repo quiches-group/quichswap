@@ -1,6 +1,7 @@
 <template>
-  <app-menu @open-wallet-details-modal="state.walletDetailModalIsOpen = true" />
+  <navbar @open-wallet-details-modal="state.walletDetailModalIsOpen = true" />
   <wallet-details-modal :is-open="state.walletDetailModalIsOpen" @modal-state-change="state.walletDetailModalIsOpen = $event" />
+
   <router-view class="mt-10" />
 
   <q-snackbar v-model="isWrongNetwork" color="error">
@@ -14,7 +15,7 @@ import { onMounted, reactive, watch } from 'vue';
 import { storeToRefs } from 'pinia';
 import { ethereum, defaultProvider, switchNetwork } from './utils/ethereum';
 import { useWalletStore } from './stores/wallet.store';
-import AppMenu from './components/AppMenu.vue';
+import Navbar from './components/Navbar.vue';
 import WalletDetailsModal from './components/WalletDetailsModal.vue';
 import { usePriceStore } from './stores/prices.store';
 
@@ -54,7 +55,6 @@ watch([provider, wallet, isWrongNetwork], () => {
 
 <style>
 body {
-  background-color: #18191a;
-  color: white;
+  @apply bg-zinc-900 text-white;
 }
 </style>
