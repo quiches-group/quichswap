@@ -19,7 +19,7 @@
       <q-col class="p-3 mt-10" :cols="12">
         <div class="mb-10 flex justify-between items-center">
           <h2 class="text-3xl">Top Tokens</h2>
-          <q-button size="small" @click="$router.push({ name: 'Pools' })">See All</q-button>
+          <q-button size="small" color="#f40087" @click="$router.push({ name: 'Pools' })">See All</q-button>
         </div>
         <q-card class="w-full bg-neutral-800 border-neutral-700 border">
           <table-tokens :tokens="tokens" @click:token="$router.push({ name: 'Token', params: { token: $event.name } })" />
@@ -28,7 +28,7 @@
       <q-col class="p-3 mt-10" :cols="12">
         <div class="mb-10 flex justify-between items-center">
           <h2 class="text-3xl">Top Pools</h2>
-          <q-button size="small" @click="$router.push({ name: 'Tokens' })">See All</q-button>
+          <q-button size="small" color="#f40087" @click="$router.push({ name: 'Tokens' })">See All</q-button>
         </div>
         <q-card class="w-full bg-neutral-800 border-neutral-700 border">
           <table-pools :pools="tokenPools" @click:pool="$router.push({ name: 'Pool', params: { pool: $event.names.join('-') } })" />
