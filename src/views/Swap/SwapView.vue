@@ -3,10 +3,12 @@
     <q-card class="flex flex-col gap-3 p-10 bg-[#2b2d2e]">
       <div class="text-gray-500 text-base">Swap from:</div>
       <div class="flex flex-1 items-center p-2 rounded-lg" :style="{ backgroundColor: '#242526' }">
-        <q-input v-model="state.amountInput" :disabled="state.swapIsLoading" :error="state.error" background-color="#242526" placeholder="Your amount" class="w-full"></q-input>
-        <div class="bg-clip-padding rounded-lg bg-gray-100 flex-none"><q-dropdown placeholder="Token" :options="tokens" accent-color="darkGray" @select="selectFromToken"></q-dropdown></div>
+        <q-input v-model="state.fromAmountInput" :disabled="state.swapIsLoading" :error="state.fromError" background-color="#242526" placeholder="Your amount" class="w-full"></q-input>
+        <div class="bg-clip-padding rounded-lg bg-gray-100 flex-none">
+          <q-dropdown bg-color="#242526" text-color="white" placeholder="Token" :options="tokens" accent-color="darkGray" @select="selectFromToken"></q-dropdown>
+        </div>
       </div>
-      <div class="flex flex-row text-xs mb-20">
+      <div class="flex flex-row text-xs">
         <span class="flex-1" />
         <div class="mr-2 text-gray-500">Balance:</div>
         <div class="flex-none">
@@ -19,10 +21,12 @@
       </div>
       <div class="text-gray-500">Swap to:</div>
       <div class="flex flex-1 items-center p-2 rounded-lg" :style="{ backgroundColor: '#242526' }">
-        <q-input v-model="state.amountInput" :disabled="state.swapIsLoading" :error="state.error" background-color="#242526" placeholder="Your amount" class="w-full"></q-input>
-        <div class="bg-clip-padding rounded-lg bg-gray-100 flex-none"><q-dropdown placeholder="Token" :options="tokens" accent-color="darkGray" @select="selectToToken"></q-dropdown></div>
+        <q-input v-model="state.toAmountInput" :disabled="state.swapIsLoading" :error="state.toError" background-color="#242526" placeholder="Your amount" class="w-full"></q-input>
+        <div class="bg-clip-padding rounded-lg bg-gray-100 flex-none">
+          <q-dropdown bg-color="#242526" text-color="white" placeholder="Token" :options="tokens" accent-color="darkGray" @select="selectToToken"></q-dropdown>
+        </div>
       </div>
-      <div class="flex flex-row text-xs mb-20">
+      <div class="flex flex-row text-xs">
         <span class="flex-1" />
         <div class="mr-2 text-gray-500">Balance:</div>
         <div class="flex-none">
@@ -32,7 +36,7 @@
       </div>
 
       <connect-button>
-        <q-button :disabled="emptyInput" :loading="state.swapIsLoading" @click="swap">Swap</q-button>
+        <q-button :disabled="!emptyInput" :loading="state.swapIsLoading" @click="swap">Swap</q-button>
       </connect-button>
     </q-card>
   </div>
@@ -43,18 +47,16 @@
 </template>
 
 <script setup>
-/* eslint-disable camelcase */
+/* eslint-disable camelcase,no-unused-vars */
 import { reactive, computed } from 'vue';
 import { storeToRefs } from 'pinia';
 import ConnectButton from '../../components/ConnectButton.vue';
 import SwapButton from './SwapButton.vue';
 import { useWalletStore } from '../../stores/wallet.store';
-import { fromWei } from '../../utils/ethers';
+import { fromWei, toWei } from '../../utils/ethers';
 
 const { fetchBalance } = useWalletStore();
-const { stBalance, qchBalance, stqchlpBalance, QCHTokenContract, SampleTokenContract, STQCH_LPTokenContract } = storeToRefs(useWalletStore());
-
-const tokens = ['QCH', 'ST', 'STQCH-LP'];
+const { stBalance, qchBalance, QCHTokenContract, SampleTokenContract, STQCH_LiquidityProvidingContract } = storeToRefs(useWalletStore());
 
 const tokensContracts = computed(() => [
   {
@@ -67,26 +69,29 @@ const tokensContracts = computed(() => [
     contract: SampleTokenContract.value,
     balance: stBalance.value,
   },
-  {
-    name: 'STQCH-LP',
-    contract: STQCH_LPTokenContract.value,
-    balance: stqchlpBalance.value,
-  },
 ]);
+
+const tokens = computed(() => tokensContracts.value.map((token) => token.name));
 
 const state = reactive({
   swapIsLoading: false,
-  amountInput: '',
-  error: '',
+  fromAmountInput: '',
+  toAmountInput: '',
+  fromError: '',
+  toError: '',
   showSuccessSnackBar: false,
-  fromTokenContract: null,
-  toTokenContract: null,
+  fromToken: null,
+  toToken: null,
   fromTokenBalance: [],
   toTokenBalance: [],
 });
 
 const emptyInput = computed(() => {
-  return state.amountInput === '';
+  return state.fromAmountInput !== '' && state.toAmountInput !== '' && state.fromToken !== null && state.toToken !== null;
+});
+
+const checkBalance = computed(() => {
+  return state.fromAmountInput <= state.fromTokenBalance;
 });
 
 const getFromTokenBalance = async (selectedToken) => {
@@ -113,7 +118,7 @@ const selectFromToken = async (selectedToken) => {
   await getFromTokenBalance(selectedToken);
   tokensContracts.value.forEach((token) => {
     if (selectedToken === token.name) {
-      state.fromTokenContract = token.contract;
+      state.fromToken = token;
     }
   });
 };
@@ -122,12 +127,33 @@ const selectToToken = async (selectedToken) => {
   await getToTokenBalance(selectedToken);
   tokensContracts.value.forEach((token) => {
     if (selectedToken === token.name) {
-      state.toTokenContract = token.contract;
+      state.toToken = token;
     }
   });
 };
 
+const getSwapMethod = () => {
+  let contract;
+  let method;
+
+  if (['QCH', 'ST'].includes(state.fromToken.name) && ['QCH', 'ST'].includes(state.toToken.name)) {
+    contract = STQCH_LiquidityProvidingContract.value;
+    console.log(contract.swapToken2);
+    console.log(contract.swapToken1);
+    method = state.fromToken.name === 'ST' ? contract.swapToken1 : contract.swapToken2;
+    console.log('aaaaaaaah@', method);
+  }
+  console.log('contract', contract);
+  console.log('method', method);
+  return method;
+};
+
 const swap = async () => {
-  // TODO: Swap methods
+  state.error = '';
+  state.swapIsLoading = true;
+  const method = getSwapMethod();
+  console.log(method);
+  const tx = await method(toWei(state.fromAmountInput));
+  await tx.wait();
 };
 </script>
