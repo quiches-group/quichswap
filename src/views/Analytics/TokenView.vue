@@ -55,10 +55,9 @@
 </template>
 
 <script>
-import * as moment from 'moment';
+import moment from 'moment';
 import { mapState } from 'pinia';
 import { useAnalyticsStore } from '../../stores/analytics.store';
-import TableTokens from './components/tables/TableTokens.vue';
 import PageSelector from './components/PageSelector.vue';
 import IconsToken from './components/icons/IconsToken.vue';
 import TablePools from './components/tables/TablePools.vue';
@@ -69,7 +68,7 @@ import { usePriceStore } from '../../stores/prices.store';
 
 export default {
   name: 'TokenView',
-  components: { GraphVolume, GraphLiquidity, GraphCard, TablePools, IconsToken, TableTokens, PageSelector },
+  components: { GraphVolume, GraphLiquidity, GraphCard, TablePools, IconsToken, PageSelector },
   data() {
     return {
       selectedGraph: 'liquidity',

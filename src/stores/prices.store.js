@@ -1,6 +1,6 @@
 /* eslint-disable camelcase */
 import { defineStore } from 'pinia';
-import * as moment from 'moment';
+import moment from 'moment';
 import axios from 'axios';
 
 export const usePriceStore = defineStore('price', {
