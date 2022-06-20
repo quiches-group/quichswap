@@ -19,7 +19,7 @@
       </p>
     </div>
 
-    <q-button class="mt-5" :disabled="state.lpTokenToRemove === ''" :loading="state.isRemovingLiquidity" @click="removeLiquidity">Remove liquidity</q-button>
+    <q-button class="mt-5" color="#f40087" text-color="#fff" :disabled="state.lpTokenToRemove === ''" :loading="state.isRemovingLiquidity" @click="removeLiquidity">Remove liquidity</q-button>
   </div>
 </template>
 

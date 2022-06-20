@@ -1,7 +1,7 @@
 <template>
-  <div class="h-screen flex justify-center items-center p-5">
+  <div class="flex justify-center items-center p-5 h-screen">
     <q-card class="flex flex-col gap-5 p-10 bg-[#2b2d2e] outline-1">
-      <div class="flex flex-row items-start flex-none">
+      <div class="flex flex-row flex-none items-start">
         <div class="flex-none">Your balance:</div>
         <span class="flex-1" />
         <div class="flex-none">
@@ -13,7 +13,7 @@
         <q-input v-model="state.amountInput" :disabled="state.mintIsLoading" :error="state.error" outline background-color="#242526" placeholder="Your amount" class="w-full"></q-input>
       </div>
       <connect-button>
-        <q-button :disabled="emptyInput" :loading="state.mintIsLoading" @click="mint">Mint</q-button>
+        <q-button color="#f40087" text-color="#fff" :disabled="emptyInput" :loading="state.mintIsLoading" @click="mint">Mint</q-button>
       </connect-button>
     </q-card>
   </div>
@@ -22,7 +22,7 @@
       You have successfully minted <b>{{ state.mintedValue }} ST</b> to your wallet!
     </p>
   </q-snackbar>
-  <canvas ref="confettiCanvas" class="fixed top-0 left-0 h-screen w-screen pointer-events-none" />
+  <canvas ref="confettiCanvas" class="fixed top-0 left-0 w-screen h-screen pointer-events-none" />
 </template>
 
 <script setup>

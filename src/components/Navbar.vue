@@ -19,25 +19,25 @@
           @click="toggleMenu()"
         >
           <span
-            class="absolute top-0 left-0 mx-auto w-4/5 h-0.5 bg-white rounded-full transition-all duration-300 transform translate-y-1 translate-x-1/7"
+            class="absolute top-0 left-0 mx-auto w-4/5 h-0.5 rounded-full transition-all duration-300 transform translate-y-1 bg-primary translate-x-1/7"
             :class="{
               'top-1/2 translate-y-0 scale-x-0 opacity-0': isMobileMenuOpened,
             }"
           />
           <span
-            class="absolute left-0 top-1/2 mx-auto w-4/5 h-0.5 bg-white rounded-full transition-all duration-300 transform -translate-y-1/2 translate-x-1/7"
+            class="absolute left-0 top-1/2 mx-auto w-4/5 h-0.5 rounded-full transition-all duration-300 transform -translate-y-1/2 bg-primary translate-x-1/7"
             :class="{
               'rotate-45': isMobileMenuOpened,
             }"
           />
           <span
-            class="absolute left-0 top-1/2 mx-auto w-4/5 h-0.5 bg-white rounded-full transition-all duration-300 transform -translate-y-1/2 translate-x-1/7"
+            class="absolute left-0 top-1/2 mx-auto w-4/5 h-0.5 rounded-full transition-all duration-300 transform -translate-y-1/2 bg-primary translate-x-1/7"
             :class="{
               '-rotate-45': isMobileMenuOpened,
             }"
           />
           <span
-            class="absolute bottom-0 left-0 mx-auto w-4/5 h-0.5 bg-white rounded-full transition-all duration-300 transform -translate-y-1 translate-x-1/7"
+            class="absolute bottom-0 left-0 mx-auto w-4/5 h-0.5 rounded-full transition-all duration-300 transform -translate-y-1 bg-primary translate-x-1/7"
             :class="{
               'bottom-1/2 translate-y-0 scale-x-0 opacity-0': isMobileMenuOpened,
             }"
@@ -51,30 +51,50 @@
           class="md:static md:inset-auto md:ml-8 md:flex md:items-strech md:pb-0 md:w-full md:bg-transparent md:shadow-none"
         >
           <div class="flex justify-center items-center md:ml-8">
-            <q-button class="!text-white" variant="link" :class="{ 'js-active': isRoute('Mint') }" :animate-on-active="true" @click="goToRouteNamed({ name: 'Mint' }), toggleMenu(false)"
+            <q-button color="#f40087" text-color="#fff" variant="link" :class="{ 'js-active': isRoute('Mint') }" :animate-on-active="true" @click="goToRouteNamed({ name: 'Mint' }), toggleMenu(false)"
               >Mint</q-button
             >
           </div>
           <div class="flex justify-center items-center md:ml-8">
-            <q-button class="!text-white" variant="link" :class="{ 'js-active': isRoute('Swap') }" :animate-on-active="true" @click="goToRouteNamed({ name: '' }), toggleMenu(false)">Swap</q-button>
+            <q-button color="#f40087" text-color="#fff" variant="link" :class="{ 'js-active': isRoute('Swap') }" :animate-on-active="true" @click="goToRouteNamed({ name: '' }), toggleMenu(false)"
+              >Swap</q-button
+            >
           </div>
           <div class="flex justify-center items-center md:ml-8">
-            <q-button class="!text-white" variant="link" :class="{ 'js-active': isRoute('Stack') }" :animate-on-active="true" @click="goToRouteNamed({ name: 'Stack' }), toggleMenu(false)"
+            <q-button
+              color="#f40087"
+              text-color="#fff"
+              variant="link"
+              :class="{ 'js-active': isRoute('Stack') }"
+              :animate-on-active="true"
+              @click="goToRouteNamed({ name: 'Stack' }), toggleMenu(false)"
               >Stacking</q-button
             >
           </div>
           <div class="flex justify-center items-center md:ml-8">
-            <q-button class="!text-white" variant="link" :class="{ 'js-active': isRoute('Liquidity') }" :animate-on-active="true" @click="goToRouteNamed({ name: 'Liquidity' }), toggleMenu(false)"
+            <q-button
+              color="#f40087"
+              text-color="#fff"
+              variant="link"
+              :class="{ 'js-active': isRoute('Liquidity') }"
+              :animate-on-active="true"
+              @click="goToRouteNamed({ name: 'Liquidity' }), toggleMenu(false)"
               >Liquidity</q-button
             >
           </div>
           <div class="flex justify-center items-center md:ml-8">
-            <q-button class="!text-white" variant="link" :class="{ 'js-active': isRoute('Analytics') }" :animate-on-active="true" @click="goToRouteNamed({ name: 'Analytics' }), toggleMenu(false)"
+            <q-button
+              color="#f40087"
+              text-color="#fff"
+              variant="link"
+              :class="{ 'js-active': isRoute('Analytics') }"
+              :animate-on-active="true"
+              @click="goToRouteNamed({ name: 'Analytics' }), toggleMenu(false)"
               >Analytics</q-button
             >
           </div>
           <connect-button class="self-center mx-auto md:ml-auto md:mr-0">
-            <q-button @click="toggleMenu(false), $emit('openWalletDetailsModal')">My wallet</q-button>
+            <q-button color="#f40087" text-color="#fff" @click="toggleMenu(false), $emit('openWalletDetailsModal')">My wallet</q-button>
           </connect-button>
         </div>
       </div>

@@ -43,7 +43,15 @@
       </p>
     </div>
 
-    <q-button class="mt-5" :disabled="state.amountOfTokenOneToStack === '' && state.amountOfTokenTwoToStack === ''" :loading="state.isAddingLiquidity" @click="addLiquidity">Add liquidity</q-button>
+    <q-button
+      class="mt-5"
+      color="#f40087"
+      text-color="#fff"
+      :disabled="state.amountOfTokenOneToStack === '' && state.amountOfTokenTwoToStack === ''"
+      :loading="state.isAddingLiquidity"
+      @click="addLiquidity"
+      >Add liquidity</q-button
+    >
   </div>
 </template>
 
