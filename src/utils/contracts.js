@@ -8,13 +8,13 @@ import stackingMetadata from '../assets/abis/QuichswapStacking.json';
 import liquidityProvidingMetadata from '../assets/abis/QuichswapLiquidityProviding.json';
 
 const addresses = {
-  SampleTokenContract: '0xe3b559e14C94eE45B9e4EaD6a58704DDab09e381',
-  QCHTokenContract: '0x55b16CCD19A5E8117F24b7572076d6F090363a88',
-  STQCH_LPTokenContract: '0x59fF9AaAD4d5512572cDe60Bf11165782553eA68',
-  ST_StackingContract: '0xF599AE5067F763B22b398d525596C38cCF33e009',
-  QCH_StackingContract: '0x300Fb6642D7073E90375A39139eB4a5B9B01A751',
-  STQCH_LiquidityProvidingContract: '0x86f52Ae564Fb5BD72Cb98e99c2f4419CE0cdBDD2',
-  STQCHLP_StackingContract: '0x5b642d57F782663e0a9781aFCD010D18f2a397B0',
+  SampleTokenContract: '0xF04FB3D1C096bC4036A53B40dFa31a3f4505f314',
+  QCHTokenContract: '0xfF0797EDe0BA8bDde091546B5Bc96B24Cc8854b6',
+  STQCH_LPTokenContract: '0x4Cd997033f91Ce5DD19594a8F781d0673e73add5',
+  ST_StackingContract: '0xD1F018EF4349e8E77429CE6f2425230a0a537315',
+  QCH_StackingContract: '0x13Cc0F3C15DCD8Ad57083F4a7d5f46b9bbE7211d',
+  STQCH_LiquidityProvidingContract: '0x09744bc4cFA71EbDd57B5245F64f52bbcc919aC4',
+  STQCHLP_StackingContract: '0x1BCf919f4c71279B50a86A91aCF424523d585d76',
 };
 
 export const SampleTokenContract = (provider) => new ethers.Contract(addresses.SampleTokenContract, sampleTokenMetadata.abi, provider);
