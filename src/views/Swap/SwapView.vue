@@ -62,10 +62,17 @@
         </div>
       </div>
 
-      <div class="flex flex-col p-4 my-7 w-full rounded-lg bg-secondary">
+      <div v-if="state.fromTokenSymbol !== '' && state.toTokenSymbol !== ''" class="flex flex-col p-4 my-7 w-full rounded-lg bg-secondary">
         <p class="flex justify-between">
-          <span>1 {{ tokenTwoUnit }} per {{ tokenOneUnit }}</span>
-          <q-format-number class="inline-block text-white" :value="valueOfOneTokenOneConvertedInTokenTwo" :max-fraction-digits="3" :min-fraction-digits="3" locale="en-US" />
+          <span class="text-gray-500">Exchange rate</span>
+          1 <span class="text-white ml-1" v-text="state.fromTokenSymbol" /> ≃<q-format-number
+            class="inline-block text-white"
+            :value="state.formattedAmount"
+            :max-fraction-digits="3"
+            :min-fraction-digits="3"
+            locale="en-US"
+          />
+          <span class="text-white ml-1" v-text="state.toTokenSymbol" />
         </p>
       </div>
 
@@ -77,14 +84,14 @@
 
   <q-snackbar :model-value="state.showSuccessSnackBar" :dismissable="true" size="medium" position="bottom" color="info" class="border-0 flex flex-row">
     <p class="mr-0.5">
-      You have successfully traded <b>{{ state.fromAmountInput }} {{ state.fromTokenSymbol }}</b> to <b>{{ state.toAmountInput }} {{ state.toTokenSymbol }}</b> your wallet!
+      You have successfully traded <b>{{ state.fromAmountInput }} {{ state.fromTokenSymbol }}</b> to <b>{{ state.toAmountInput }} {{ state.toTokenSymbol }}</b> on your wallet!
     </p>
   </q-snackbar>
 </template>
 
 <script setup>
 /* eslint-disable camelcase */
-import { computed, reactive } from 'vue';
+import { computed, reactive, onMounted } from 'vue';
 import { storeToRefs } from 'pinia';
 import ConnectButton from '../../components/ConnectButton.vue';
 import SwapButton from './SwapButton.vue';
@@ -122,6 +129,7 @@ const state = reactive({
   fromTokenSymbol: '',
   toTokenBalance: 0,
   toTokenSymbol: '',
+  formattedAmount: '',
 });
 
 const emptyInput = computed(() => {
@@ -142,7 +150,11 @@ const getAmountToSwap = async (newFormattedValue) => {
     newTokenAmountToSwapValue = newFormattedValue;
     return newTokenAmountToSwapValue;
   }
-  return fromWei(newTokenAmountToSwapValue);
+  return Number.parseFloat(fromWei(newTokenAmountToSwapValue)).toFixed(3);
+};
+
+const formattedAmount = async () => {
+  state.formattedAmount = await getAmountToSwap('1');
 };
 
 const onFirstInputUpdated = async (event) => {
@@ -153,6 +165,7 @@ const onFirstInputUpdated = async (event) => {
     state.toAmountInput = newFormattedValue;
     return;
   }
+  await formattedAmount();
   state.toAmountInput = await getAmountToSwap(newFormattedValue);
 };
 
@@ -164,6 +177,7 @@ const onSecondInputUpdated = async (event) => {
     state.fromAmountInput = newFormattedValue;
     return;
   }
+  await formattedAmount();
   state.fromAmountInput = await getAmountToSwap(newFormattedValue);
 };
 
@@ -197,6 +211,7 @@ const selectFromToken = async (selectedToken) => {
       state.fromToken = token;
     }
   });
+  await formattedAmount();
 };
 
 const selectToToken = async (selectedToken) => {
@@ -207,6 +222,7 @@ const selectToToken = async (selectedToken) => {
       state.toToken = token;
     }
   });
+  await formattedAmount();
 };
 
 const updateSelectedTokensBalances = async () => {
@@ -252,4 +268,6 @@ const swap = async () => {
   await updateSelectedTokensBalances();
   state.swapIsLoading = false;
 };
+
+onMounted(formattedAmount);
 </script>
