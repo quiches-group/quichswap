@@ -8,8 +8,8 @@
       'success-stories-bg': isRoute('success-stories') && !(isScrolling || isMobileMenuOpened),
     }"
   >
-    <div class="flex items-center h-full md:px-0 desktop:mx-auto" style="max-width: 1920px">
-      <router-link to="/" class="flex flex-shrink-0 justify-center items-center w-10 h-7 select-none" aria-label="Page d'accueil" @click="toggleMenu(false)">
+    <div class="flex items-center h-full md:px-0 md:mx-auto" style="max-width: 1920px">
+      <router-link to="/" class="flex flex-shrink-0 justify-center items-center w-12 h-10 select-none" aria-label="Page d'accueil" @click="toggleMenu(false)">
         <img class="max-w-full max-h-full" src="@/assets/tokens/qch.png" alt="Quiches token logo" />
       </router-link>
       <div class="flex ml-auto h-full md:flex-grow md:ml-0">
