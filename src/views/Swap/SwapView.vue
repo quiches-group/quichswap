@@ -62,6 +62,13 @@
         </div>
       </div>
 
+      <div class="flex flex-col p-4 my-7 w-full rounded-lg bg-secondary">
+        <p class="flex justify-between">
+          <span>1 {{ tokenTwoUnit }} per {{ tokenOneUnit }}</span>
+          <q-format-number class="inline-block text-white" :value="valueOfOneTokenOneConvertedInTokenTwo" :max-fraction-digits="3" :min-fraction-digits="3" locale="en-US" />
+        </p>
+      </div>
+
       <connect-button>
         <q-button :disabled="!emptyInput" :loading="state.swapIsLoading" @click="swap">Swap</q-button>
       </connect-button>
@@ -69,7 +76,9 @@
   </div>
 
   <q-snackbar :model-value="state.showSuccessSnackBar" :dismissable="true" size="medium" position="bottom" color="info" class="border-0 flex flex-row">
-    <p class="mr-0.5"></p>
+    <p class="mr-0.5">
+      You have successfully traded <b>{{ state.fromAmountInput }} {{ state.fromTokenSymbol }}</b> to <b>{{ state.toAmountInput }} {{ state.toTokenSymbol }}</b> your wallet!
+    </p>
   </q-snackbar>
 </template>
 
@@ -232,6 +241,7 @@ const swap = async () => {
     await tx.wait();
     state.fromAmountInput = '';
     state.toAmountInput = '';
+    state.showSuccessSnackBar = true;
   } catch (err) {
     if (err.code === 'INVALID_ARGUMENT' || err.name === 'RangeError') {
       state.fromError = 'Please enter a valid amount';
