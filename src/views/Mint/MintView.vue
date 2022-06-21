@@ -1,6 +1,6 @@
 <template>
   <div class="flex justify-center items-center p-5 h-screen">
-    <q-card class="flex flex-col gap-5 p-10 bg-[#2b2d2e] outline-1">
+    <q-card class="flex flex-col gap-5 p-10 bg-tertiary outline-1">
       <div class="flex flex-row flex-none items-start">
         <div class="flex-none">Your balance:</div>
         <span class="flex-1" />
@@ -17,7 +17,7 @@
       </connect-button>
     </q-card>
   </div>
-  <q-snackbar v-model="state.showSuccessSnackBar">
+  <q-snackbar v-model="state.showSuccessSnackBar" dismissable class="border-0 flex flex-row">
     <p class="mr-0.5">
       You have successfully minted <b>{{ state.mintedValue }} ST</b> to your wallet!
     </p>
@@ -110,7 +110,7 @@ const mint = async () => {
     if (err.code === 'INVALID_ARGUMENT' || err.name === 'RangeError') {
       state.error = 'Please enter a valid amount';
     } else {
-      state.error = 'An error occurred, please try again';
+      state.error = 'An error occurred, try again';
     }
   }
   await fetchBalance();

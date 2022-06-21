@@ -58,6 +58,11 @@ const router = createRouter({
       name: 'Token',
       component: () => import('../views/Analytics/TokenView.vue'),
     },
+    {
+      path: '/swap',
+      name: 'Swap',
+      component: () => import('../views/Swap/SwapView.vue'),
+    },
   ],
 });
 

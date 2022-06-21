@@ -56,7 +56,7 @@
             >
           </div>
           <div class="flex justify-center items-center md:ml-8">
-            <q-button color="#f40087" text-color="#fff" variant="link" :class="{ 'js-active': isRoute('Swap') }" :animate-on-active="true" @click="goToRouteNamed({ name: '' }), toggleMenu(false)"
+            <q-button color="#f40087" text-color="#fff" variant="link" :class="{ 'js-active': isRoute('Swap') }" :animate-on-active="true" @click="goToRouteNamed({ name: 'Swap' }), toggleMenu(false)"
               >Swap</q-button
             >
           </div>
