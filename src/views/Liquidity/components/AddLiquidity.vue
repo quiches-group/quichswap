@@ -55,7 +55,7 @@
       >
     </connect-button>
 
-    <q-snackbar v-model="hasUserLessFundsThanRequired" color="alert" timeout="1000" size="full" absolute>
+    <q-snackbar v-model="hasUserLessFundsThanRequired" color="alert" timeout="1000" size="full" class="!bottom-0" absolute>
       <p class="mr-0.5">You don't have enough funds.</p>
     </q-snackbar>
   </div>
@@ -191,5 +191,9 @@ const hasUserLessFundsThanRequired = computed(() => {
 .appearance-fix input::-webkit-inner-spin-button,
 .appearance-fix input::-webkit-outer-spin-button {
   @apply appearance-none;
+}
+
+.\!bottom-0 {
+  bottom: 0 !important;
 }
 </style>
