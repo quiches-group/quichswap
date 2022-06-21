@@ -77,7 +77,7 @@
       </div>
 
       <connect-button>
-        <q-button :disabled="!emptyInput" :loading="state.swapIsLoading" @click="swap">Swap</q-button>
+        <q-button color="#f40087" :disabled="!emptyInput" :loading="state.swapIsLoading" @click="swap">Swap</q-button>
       </connect-button>
     </q-card>
   </div>
