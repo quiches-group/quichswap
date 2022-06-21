@@ -20,13 +20,13 @@
             <span class="text-white" v-text="` ${state.modalConfigurator.tokenName}`" />
           </p>
 
-          <q-button size="small" :style="{ backgroundcolor: '#000000' }" @click="handleModalMaxButton">Max</q-button>
+          <q-button color="#f40087" size="small" :style="{ backgroundcolor: '#000000' }" @click="handleModalMaxButton">Max</q-button>
         </div>
       </div>
 
       <div class="flex gap-3">
-        <q-button class="flex-1 mr-2" @click="modalAction(false)">Cancel</q-button>
-        <q-button class="flex-1" @click="handleModalAction">{{ state.modalConfigurator.actionName }}</q-button>
+        <q-button color="#f40087" class="flex-1 mr-2" @click="modalAction(false)">Cancel</q-button>
+        <q-button color="#f40087" class="flex-1" @click="handleModalAction">{{ state.modalConfigurator.actionName }}</q-button>
       </div>
     </q-modal-content>
   </q-modal>
