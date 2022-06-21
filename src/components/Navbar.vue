@@ -94,7 +94,7 @@
             >
           </div>
           <connect-button class="self-center mx-auto md:ml-auto md:mr-0">
-            <q-button size="small" color="#f40087" text-color="#fff" @click="toggleMenu(false), $emit('openWalletDetailsModal')">My wallet</q-button>
+            <q-button class="self-center mx-auto md:ml-auto md:mr-0" size="small" color="#f40087" text-color="#fff" @click="toggleMenu(false), $emit('openWalletDetailsModal')">My wallet</q-button>
           </connect-button>
         </div>
       </div>
@@ -104,8 +104,10 @@
 
 <script>
 import router from '../router/index';
+import ConnectButton from './ConnectButton.vue';
 
 export default {
+  components: { ConnectButton },
   emits: ['menuToggled', 'openWalletDetailsModal'],
   data() {
     return {

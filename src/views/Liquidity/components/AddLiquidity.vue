@@ -43,15 +43,17 @@
       </p>
     </div>
 
-    <q-button
-      class="mt-5"
-      color="#f40087"
-      text-color="#fff"
-      :disabled="(state.amountOfTokenOneToStack === '' && state.amountOfTokenTwoToStack === '') || hasUserLessFundsThanRequired"
-      :loading="state.isAddingLiquidity"
-      @click="addLiquidity"
-      >Add liquidity</q-button
-    >
+    <connect-button class="mt-5">
+      <q-button
+        class="mt-5"
+        color="#f40087"
+        text-color="#fff"
+        :disabled="(state.amountOfTokenOneToStack === '' && state.amountOfTokenTwoToStack === '') || hasUserLessFundsThanRequired"
+        :loading="state.isAddingLiquidity"
+        @click="addLiquidity"
+        >Add liquidity</q-button
+      >
+    </connect-button>
 
     <q-snackbar v-model="hasUserLessFundsThanRequired" color="alert" timeout="1000" size="full" absolute>
       <p class="mr-0.5">You don't have enough funds.</p>
@@ -63,6 +65,7 @@
 /* eslint-disable camelcase */
 import { reactive, computed } from 'vue';
 import { fromWei, toWei } from '../../../utils/ethers';
+import ConnectButton from '../../../components/ConnectButton.vue';
 
 const emit = defineEmits(['transationStarted', 'transationEnded', 'transationFailed']);
 
