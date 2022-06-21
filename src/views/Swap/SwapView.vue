@@ -1,7 +1,7 @@
 <template>
   <div class="p-5 flex flex-col items-center">
     <h1 class="mt-10 text-4xl font-medium text-center">Swap</h1>
-    <p class="text-lg font-light text-center text-gray-200">Trade tokens in an instant</p>
+    <p class="text-lg font-light text-center text-gray-200">Trade tokens easily</p>
     <q-card class="flex flex-col gap-3 p-10 bg-tertiary mt-5">
       <div class="text-gray-500 text-base">Swap from:</div>
       <div class="flex flex-1 items-center p-2 rounded-lg bg-secondary">
@@ -82,7 +82,7 @@
     </q-card>
   </div>
 
-  <q-snackbar v-model="state.showSuccessSnackBar" :dismissable="true" size="medium" position="bottom" color="info" class="border-0 flex flex-row">
+  <q-snackbar v-model="state.showSuccessSnackBar" timeout="3000" dismissable class="border-0 flex flex-row">
     <p class="mr-0.5">
       You have successfully traded <b>{{ state.tradedFromAmount }} {{ state.fromTokenSymbol }}</b> for <b>{{ state.tradedToAmount }} {{ state.toTokenSymbol }}</b> on your wallet!
     </p>
