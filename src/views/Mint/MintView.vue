@@ -17,7 +17,7 @@
       </connect-button>
     </q-card>
   </div>
-  <q-snackbar v-model="state.showSuccessSnackBar" dismissable class="border-0 flex flex-row">
+  <q-snackbar v-model="state.showSuccessSnackBar" timeout="3000" dismissable class="border-0 flex flex-row">
     <p class="mr-0.5">
       You have successfully minted <b>{{ state.mintedValue }} ST</b> to your wallet!
     </p>
