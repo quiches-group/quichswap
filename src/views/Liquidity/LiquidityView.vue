@@ -20,6 +20,8 @@
         :token-one-contract="qchContract"
         :token-two-contract="stContract"
         :lp-contract="lpContract"
+        :token-one-balance="qchBalance"
+        :token-two-balance="stBalance"
         @transation-started="(state.isActiveTx = true), (state.isTxCanceled = false)"
         @transation-ended="transationEnded"
         @transation-failed="transationFailed"
@@ -46,6 +48,7 @@
     <q-snackbar v-model="state.isTxEnded" dissmissable>
       <p class="mr-0.5">Transactions ends successfully. Your liquidity has updated</p>
     </q-snackbar>
+
     <q-snackbar v-model="state.isTxCanceled" color="error" dissmissable>
       <p class="mr-0.5">Transactions ends with error. It may have been canceled</p>
     </q-snackbar>

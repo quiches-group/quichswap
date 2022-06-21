@@ -51,8 +51,8 @@
           </p>
         </div>
 
-        <q-button :loading="state.claimIsLoading" @click="claimRewards">Claim</q-button>
-        <q-button :loading="state.withdrawIsLoading" @click="handleOpenWithdrawTokens">Withdraw</q-button>
+        <q-button color="#f40087" :loading="state.claimIsLoading" @click="claimRewards">Claim</q-button>
+        <q-button color="#f40087" :loading="state.withdrawIsLoading" @click="handleOpenWithdrawTokens">Withdraw</q-button>
       </div>
 
       <div v-else class="flex gap-5 justify-start items-center p-3">

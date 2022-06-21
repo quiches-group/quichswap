@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col items-center">
+  <div class="flex relative flex-col items-center">
     <q-input
       v-model="state.amountOfTokenOneToStack"
       class="w-full appearance-fix"
@@ -47,17 +47,21 @@
       class="mt-5"
       color="#f40087"
       text-color="#fff"
-      :disabled="state.amountOfTokenOneToStack === '' && state.amountOfTokenTwoToStack === ''"
+      :disabled="(state.amountOfTokenOneToStack === '' && state.amountOfTokenTwoToStack === '') || hasUserLessFundsThanRequired"
       :loading="state.isAddingLiquidity"
       @click="addLiquidity"
       >Add liquidity</q-button
     >
+
+    <q-snackbar v-model="hasUserLessFundsThanRequired" color="alert" timeout="1000" size="full" absolute>
+      <p class="mr-0.5">You don't have enough funds.</p>
+    </q-snackbar>
   </div>
 </template>
 
 <script setup>
 /* eslint-disable camelcase */
-import { reactive } from 'vue';
+import { reactive, computed } from 'vue';
 import { fromWei, toWei } from '../../../utils/ethers';
 
 const emit = defineEmits(['transationStarted', 'transationEnded', 'transationFailed']);
@@ -97,6 +101,14 @@ const props = defineProps({
   },
   lpContract: {
     type: Object,
+    required: true,
+  },
+  tokenOneBalance: {
+    type: [Object, Number, String],
+    required: true,
+  },
+  tokenTwoBalance: {
+    type: [Object, Number, String],
     required: true,
   },
 });
@@ -162,6 +174,14 @@ async function addLiquidity() {
     emit('transationFailed');
   }
 }
+
+const hasUserLessFundsThanRequired = computed(() => {
+  if ((!state.amountOfTokenOneToStack || state.amountOfTokenOneToStack === 'NaN') && (!state.amountOfTokenTwoToStack || state.amountOfTokenTwoToStack === 'NaN')) {
+    return false;
+  }
+
+  return formatValues(state.amountOfTokenOneToStack) >= fromWei(props.tokenOneBalance) && formatValues(state.amountOfTokenTwoToStack) >= fromWei(props.tokenTwoBalance);
+});
 </script>
 
 <style>
