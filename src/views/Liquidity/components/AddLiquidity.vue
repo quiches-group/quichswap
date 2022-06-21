@@ -165,7 +165,7 @@ async function addLiquidity() {
     const tokenTwoTransation = await props.tokenTwoContract.approve(props.lpContract.address, toWei(state.amountOfTokenTwoToStack));
     await tokenTwoTransation.wait();
 
-    const LPtransation = await props.lpContract.addLiquidity(toWei(state.amountOfTokenOneToStack), toWei(state.amountOfTokenTwoToStack));
+    const LPtransation = await props.lpContract.addLiquidity(toWei(state.amountOfTokenTwoToStack), toWei(state.amountOfTokenOneToStack));
     await LPtransation.wait();
 
     state.isAddingLiquidity = false;
