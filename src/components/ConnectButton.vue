@@ -1,6 +1,8 @@
 <template>
-  <q-button v-if="!walletIsConnected" color="#f40087" @click="connectMetamask">Connect</q-button>
-  <slot v-else />
+  <div class="flex justify-center items-center">
+    <q-button v-if="!walletIsConnected" color="#f40087" @click="connectMetamask">Connect</q-button>
+    <slot v-else />
+  </div>
 </template>
 
 <script setup>

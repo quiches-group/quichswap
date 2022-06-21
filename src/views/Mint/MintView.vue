@@ -1,28 +1,30 @@
 <template>
-  <div class="flex justify-center items-center p-5 h-screen">
-    <q-card class="flex flex-col gap-5 p-10 bg-tertiary outline-1">
-      <div class="flex flex-row flex-none items-start">
-        <div class="flex-none">Your balance:</div>
-        <span class="flex-1" />
-        <div class="flex-none">
-          <q-format-number class="inline-block" :value="walletBalance" :max-fraction-digits="1" :min-fraction-digits="1" locale="en-US" />
-          <span class="text-white" v-text="' ST'" />
+  <div>
+    <div class="flex justify-center items-center p-5 h-screen">
+      <q-card class="flex flex-col gap-5 p-10 bg-tertiary outline-1">
+        <div class="flex flex-row flex-none items-start">
+          <div class="flex-none">Your balance:</div>
+          <span class="flex-1" />
+          <div class="flex-none">
+            <q-format-number class="inline-block" :value="walletBalance" :max-fraction-digits="1" :min-fraction-digits="1" locale="en-US" />
+            <span class="text-white" v-text="' ST'" />
+          </div>
         </div>
-      </div>
-      <div class="flex flex-row">
-        <q-input v-model="state.amountInput" :disabled="state.mintIsLoading" :error="state.error" outline background-color="#242526" placeholder="Your amount" class="w-full"></q-input>
-      </div>
-      <connect-button>
-        <q-button color="#f40087" text-color="#fff" :disabled="emptyInput" :loading="state.mintIsLoading" @click="mint">Mint</q-button>
-      </connect-button>
-    </q-card>
+        <div class="flex flex-row">
+          <q-input v-model="state.amountInput" :disabled="state.mintIsLoading" :error="state.error" outline background-color="#242526" placeholder="Your amount" class="w-full"></q-input>
+        </div>
+        <connect-button>
+          <q-button color="#f40087" text-color="#fff" :disabled="emptyInput" :loading="state.mintIsLoading" @click="mint">Mint</q-button>
+        </connect-button>
+      </q-card>
+    </div>
+    <q-snackbar v-model="state.showSuccessSnackBar" dismissable timeout="1000">
+      <p class="mr-0.5">
+        You have successfully minted <b>{{ state.mintedValue }} ST</b> to your wallet!
+      </p>
+    </q-snackbar>
+    <canvas ref="confettiCanvas" class="fixed top-0 left-0 w-screen h-screen pointer-events-none" />
   </div>
-  <q-snackbar v-model="state.showSuccessSnackBar" dismissable class="border-0 flex flex-row">
-    <p class="mr-0.5">
-      You have successfully minted <b>{{ state.mintedValue }} ST</b> to your wallet!
-    </p>
-  </q-snackbar>
-  <canvas ref="confettiCanvas" class="fixed top-0 left-0 w-screen h-screen pointer-events-none" />
 </template>
 
 <script setup>

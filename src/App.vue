@@ -2,7 +2,7 @@
   <navbar @open-wallet-details-modal="state.walletDetailModalIsOpen = true" />
   <wallet-details-modal :is-open="state.walletDetailModalIsOpen" @modal-state-change="state.walletDetailModalIsOpen = $event" />
 
-  <router-view class="mt-10" />
+  <router-view />
 
   <q-snackbar v-model="isWrongNetwork" color="error">
     <p class="inline mr-0.5">You are not connected to the right network,</p>
