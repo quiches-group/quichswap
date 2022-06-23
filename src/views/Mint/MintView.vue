@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="flex justify-center items-center p-5 h-screen">
+    <div class="flex justify-center items-center p-5" style="height: calc(100vh - 64px)">
       <q-card class="flex flex-col gap-5 p-10 bg-tertiary outline-1">
         <div class="flex flex-row flex-none items-start">
           <div class="flex-none">Your balance:</div>

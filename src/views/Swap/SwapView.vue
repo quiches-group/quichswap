@@ -1,9 +1,9 @@
 <template>
-  <div class="p-5 flex flex-col items-center">
+  <div class="flex flex-col items-center p-5">
     <h1 class="mt-10 text-4xl font-medium text-center">Swap</h1>
     <p class="text-lg font-light text-center text-gray-200">Trade tokens in an instant</p>
-    <q-card class="flex flex-col gap-3 p-10 bg-tertiary mt-5">
-      <div class="text-gray-500 text-base">Swap from:</div>
+    <q-card class="flex flex-col gap-3 p-10 mt-5 bg-tertiary">
+      <div class="text-base text-gray-500">Swap from:</div>
       <div class="flex flex-1 items-center p-2 rounded-lg bg-secondary">
         <q-input
           v-model="state.fromAmountInput"
@@ -11,10 +11,10 @@
           :error="state.fromError"
           background-color="#242526"
           placeholder="Your amount"
-          class="w-full flex flex-auto"
+          class="flex flex-auto w-full"
           @change="onFirstInputUpdated"
         ></q-input>
-        <div class="bg-clip-padding rounded-lg bg-gray-100 flex-none">
+        <div class="flex-none bg-clip-padding bg-gray-100 rounded-lg">
           <q-dropdown
             class="disabled:opacity-80"
             :disabled="state.swapIsLoading"
@@ -32,7 +32,7 @@
         <div class="mr-2 text-gray-500">Balance:</div>
         <div class="flex-none">
           <q-format-number class="inline-block" :value="state.fromTokenBalance" :max-fraction-digits="3" :min-fraction-digits="3" locale="en-US" />
-          <span class="text-white ml-1" v-text="state.fromTokenSymbol" />
+          <span class="ml-1 text-white" v-text="state.fromTokenSymbol" />
         </div>
       </div>
       <div class="flex flex-col items-center mt-3">
@@ -49,30 +49,30 @@
           class="w-full"
           @change="onSecondInputUpdated"
         ></q-input>
-        <div class="bg-clip-padding rounded-lg bg-gray-100 flex-none">
+        <div class="flex-none bg-clip-padding bg-gray-100 rounded-lg">
           <q-dropdown :disabled="state.swapIsLoading" bg-color="#242526" text-color="white" placeholder="Token" :options="tokens" accent-color="darkGray" @select="selectToToken"></q-dropdown>
         </div>
       </div>
-      <div class="flex flex-row text-xs mb-5">
+      <div class="flex flex-row mb-5 text-xs">
         <span class="flex-1" />
         <div class="mr-2 text-gray-500">Balance:</div>
         <div class="flex-none">
           <q-format-number class="inline-block" :value="state.toTokenBalance" :max-fraction-digits="3" :min-fraction-digits="3" locale="en-US" />
-          <span class="text-white ml-1" v-text="state.toTokenSymbol" />
+          <span class="ml-1 text-white" v-text="state.toTokenSymbol" />
         </div>
       </div>
 
       <div v-if="state.fromTokenSymbol !== '' && state.toTokenSymbol !== ''" class="flex flex-col p-4 my-7 w-full rounded-lg bg-secondary">
         <p class="flex justify-between">
           <span class="text-gray-500">Exchange rate</span>
-          1 <span class="text-white ml-1" v-text="state.fromTokenSymbol" /> ≃<q-format-number
+          1 <span class="ml-1 text-white" v-text="state.fromTokenSymbol" /> ≃<q-format-number
             class="inline-block text-white"
             :value="state.formattedAmount"
             :max-fraction-digits="3"
             :min-fraction-digits="3"
             locale="en-US"
           />
-          <span class="text-white ml-1" v-text="state.toTokenSymbol" />
+          <span class="ml-1 text-white" v-text="state.toTokenSymbol" />
         </p>
       </div>
 
@@ -82,7 +82,7 @@
     </q-card>
   </div>
 
-  <q-snackbar v-model="state.showSuccessSnackBar" :dismissable="true" size="medium" position="bottom" color="info" class="border-0 flex flex-row">
+  <q-snackbar v-model="state.showSuccessSnackBar" class="flex flex-row border-0" dismissable timeout="1000">
     <p class="mr-0.5">
       You have successfully traded <b>{{ state.tradedFromAmount }} {{ state.fromTokenSymbol }}</b> for <b>{{ state.tradedToAmount }} {{ state.toTokenSymbol }}</b> on your wallet!
     </p>
