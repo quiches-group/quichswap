@@ -123,6 +123,10 @@ const state = reactive({
 });
 
 function formatValues(value) {
+  if (!value) {
+    return '';
+  }
+
   return Number.parseFloat(value).toFixed(3).toString();
 }
 
@@ -179,11 +183,14 @@ async function addLiquidity() {
 }
 
 const hasUserLessFundsThanRequired = computed(() => {
-  if ((!state.amountOfTokenOneToStack || state.amountOfTokenOneToStack === 'NaN') && (!state.amountOfTokenTwoToStack || state.amountOfTokenTwoToStack === 'NaN')) {
+  if (!state.amountOfTokenOneToStack || state.amountOfTokenOneToStack === 'NaN' || !state.amountOfTokenTwoToStack || state.amountOfTokenTwoToStack === 'NaN') {
     return false;
   }
 
-  return formatValues(state.amountOfTokenOneToStack) >= fromWei(props.tokenOneBalance) && formatValues(state.amountOfTokenTwoToStack) >= fromWei(props.tokenTwoBalance);
+  return (
+    parseFloat(formatValues(state.amountOfTokenOneToStack)) >= parseFloat(fromWei(props.tokenOneBalance)) ||
+    parseFloat(formatValues(state.amountOfTokenTwoToStack)) >= parseFloat(fromWei(props.tokenTwoBalance))
+  );
 });
 </script>
 
